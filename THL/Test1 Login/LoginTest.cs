@@ -20,10 +20,10 @@ public class LoginTests
     [Test]
     public void VerifyUserCanLogInWithValidCredentials()
     {
-        loginPage.EnterEmail("valid@example.com");
-        loginPage.EnterPassword("validPassword");
+        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
+        loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("dashboard")); // Adjust expected URL as necessary
+        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class LoginTests
     public void LogInWithUnregisteredEmail()
     {
         loginPage.EnterEmail("unregistered@example.com");
-        loginPage.EnterPassword("validPassword");
+        loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
         Assert.IsTrue(loginPage.ErrorMessage.Displayed);
     }
@@ -107,7 +107,7 @@ public class LoginTests
     [Test]
     public void LogInWithValidEmailButIncorrectPassword()
     {
-        loginPage.EnterEmail("valid@example.com");
+        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
         loginPage.EnterPassword("wrongPassword");
         loginPage.ClickLoginButton();
         Assert.IsTrue(loginPage.ErrorMessage.Displayed);
@@ -116,21 +116,21 @@ public class LoginTests
     [Test]
     public void TestLoginWithCopyPasteAction()
     {
-        var email = "valid@example.com";
-        var password = "validPassword";
+        var email = "grace.gitungo@switchlinkafrica.co.ke";
+        var password = "grace1234";
         loginPage.EnterEmail(email);
         loginPage.EnterPassword(password);
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("dashboard")); // Adjust expected URL as necessary
+        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
     }
 
     [Test]
     public void LogInWithPasswordIncludingSpecialCharacters()
     {
-        loginPage.EnterEmail("valid@example.com");
-        loginPage.EnterPassword("P@ssw0rd!");
+        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
+        loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("dashboard")); // Adjust expected URL as necessary
+        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
     }
 
     [Test]
