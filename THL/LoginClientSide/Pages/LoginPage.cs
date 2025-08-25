@@ -1,3 +1,9 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -17,7 +23,7 @@ public class LoginPage
     public IWebElement ShowPasswordCheckbox => wait.Until(d => d.FindElement(By.XPath("//input[@type='checkbox']")));
     public IWebElement LoginButton => wait.Until(d => d.FindElement(By.CssSelector(".button")));
     public IWebElement ForgotPasswordLink => wait.Until(d => d.FindElement(By.CssSelector(".btn.btn-link")));
-    public IWebElement ErrorMessage => wait.Until(d => d.FindElement(By.CssSelector(".alert.alert-danger"))); // Adjust selector as necessary
+    public IWebElement ErrorMessage => wait.Until(d => d.FindElement(By.CssSelector("#email")));
 
     public void EnterEmail(string email)
     {
@@ -46,3 +52,4 @@ public class LoginPage
         ForgotPasswordLink.Click();
     }
 }
+

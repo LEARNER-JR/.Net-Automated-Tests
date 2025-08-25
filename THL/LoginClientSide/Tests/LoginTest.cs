@@ -1,6 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+
 
 [TestFixture]
 public class LoginTests
@@ -12,7 +19,10 @@ public class LoginTests
     [SetUp]
     public void Setup()
     {
-        driver = new ChromeDriver();
+        //log the browser console logs
+        var options = new ChromeOptions();
+        options.AddArgument("log-level=3"); // Info
+        driver = new ChromeDriver(options);
         driver.Navigate().GoToUrl(baseUrl);
         loginPage = new LoginPage(driver);
     }
@@ -23,14 +33,14 @@ public class LoginTests
         loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
         loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
+        Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }
 
     [Test]
     public void CheckForgotPasswordLinkRedirects()
     {
         loginPage.ClickForgotPassword();
-        Assert.AreEqual(driver.Url, "https://sit-portal.trackinghub.co.ke/password/reset");
+        Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/password/reset"), Is .True);
     }
 
     [Test]
@@ -38,21 +48,26 @@ public class LoginTests
     {
         loginPage.EnterPassword("testPassword");
         loginPage.ClickShowPassword();
-        Assert.AreEqual(loginPage.PasswordInput.GetAttribute("type"), "text");
+        // Replace all instances of Assert.AreEqual with Assert.That and Is.EqualTo
+
+        // Example replacement:
+        // Assert.AreEqual(loginPage.PasswordInput.GetAttribute("type"), "text");
+        // becomes:
+        Assert.That(loginPage.PasswordInput.GetAttribute("type"), Is.EqualTo("text"));
     }
 
     [Test]
     public void ValidateEmailInputAcceptsValidFormats()
     {
         loginPage.EnterEmail("user@example.com");
-        Assert.IsTrue(IsValidEmail(loginPage.EmailInput.GetAttribute("value")));
+        Assert.That(IsValidEmail(loginPage.EmailInput.GetAttribute("value")), Is.True);
     }
 
     [Test]
     public void ConfirmPasswordRequiresMinimumCharacters()
     {
         loginPage.EnterPassword("123");
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
@@ -60,7 +75,7 @@ public class LoginTests
     {
         loginPage.EnterEmail("user@example.com");
         loginPage.EnterPassword("validPassword");
-        Assert.IsTrue(loginPage.LoginButton.Enabled);
+        Assert.That(loginPage.LoginButton.Enabled, Is.True);
     }
 
     [Test]
@@ -68,7 +83,7 @@ public class LoginTests
     {
         loginPage.EnterEmail("invalidEmail");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
@@ -76,14 +91,14 @@ public class LoginTests
     {
         loginPage.EnterPassword("validPassword");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
     public void EnterPasswordShorterThan6Characters()
     {
         loginPage.EnterPassword("12345");
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
@@ -92,7 +107,7 @@ public class LoginTests
         loginPage.EnterEmail("unregistered@example.com");
         loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
@@ -101,7 +116,7 @@ public class LoginTests
         loginPage.EnterPassword("testPassword");
         loginPage.ClickShowPassword();
         loginPage.ClickShowPassword(); // Uncheck
-        Assert.AreEqual(loginPage.PasswordInput.GetAttribute("type"), "password");
+        Assert.That(loginPage.PasswordInput.GetAttribute("type"), Is.EqualTo("password"));
     }
 
     [Test]
@@ -110,7 +125,7 @@ public class LoginTests
         loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
         loginPage.EnterPassword("wrongPassword");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(loginPage.ErrorMessage.Displayed);
+        Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
 
     [Test]
@@ -121,7 +136,7 @@ public class LoginTests
         loginPage.EnterEmail(email);
         loginPage.EnterPassword(password);
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
+        Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }
 
     [Test]
@@ -130,7 +145,7 @@ public class LoginTests
         loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
         loginPage.EnterPassword("grace1234");
         loginPage.ClickLoginButton();
-        Assert.IsTrue(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
+        Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }
 
     [Test]
@@ -145,8 +160,8 @@ public class LoginTests
     {
         loginPage.EnterEmail("autofill@example.com");
         loginPage.EnterPassword("autofillPassword");
-        Assert.IsFalse(string.IsNullOrEmpty(loginPage.EmailInput.GetAttribute("value")));
-        Assert.IsFalse(string.IsNullOrEmpty(loginPage.PasswordInput.GetAttribute("value")));
+        Assert.That(string.IsNullOrEmpty(loginPage.EmailInput.GetAttribute("value")), Is.False);
+        Assert.That(string.IsNullOrEmpty(loginPage.PasswordInput.GetAttribute("value")), Is.False);
     }
 
     [Test]
@@ -154,12 +169,14 @@ public class LoginTests
     {
         loginPage.ClickForgotPassword();
         driver.Navigate().Back();
-        Assert.AreEqual(driver.Url, baseUrl);
+        Assert.That(driver.Url, Is.EqualTo(baseUrl));
     }
 
     [Test]
     public void FormBehaviorWhenJavaScriptIsDisabled()
     {
+        Assert.That(loginPage.PasswordInput.GetAttribute("type"), Is.EqualTo("password"));
+        Assert.That(driver.Url, Is.EqualTo(baseUrl));
         // This test requires a specific browser setup to disable JavaScript
         Assert.Pass("JavaScript disabled behavior should be tested manually.");
     }
