@@ -19,6 +19,7 @@ public abstract class BaseTest
     public virtual void Setup()
     {
         driver = new ChromeDriver();
+        driver.Manage().Window.Maximize();
         wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/login");
 
@@ -39,6 +40,30 @@ public abstract class BaseTest
     public virtual void TearDown()
     {
         driver.Quit();
+    }
+
+    protected void EnterText(IWebElement element, string value)
+    {
+        element.Clear();
+        element.SendKeys(value);
+    }
+
+    protected void ClickElement(IWebElement element)
+    {
+        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(element));
+        element.Click();
+    }
+
+    protected void SelectDropdownByValue(IWebElement element, string value)
+    {
+        var select = new SelectElement(element);
+        select.SelectByValue(value);
+    }
+
+    protected void WaitForElementVisible(By locator, int timeoutSeconds = 10)
+    {
+        new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutSeconds))
+            .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(locator));
     }
 }
 
