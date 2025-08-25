@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -30,8 +29,8 @@ public class LoginTests
     [Test]
     public void VerifyUserCanLogInWithValidCredentials()
     {
-        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
-        loginPage.EnterPassword("grace1234");
+        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
+        loginPage.EnterPassword("jane1234");
         loginPage.ClickLoginButton();
         Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }
@@ -100,7 +99,7 @@ public class LoginTests
     public void LogInWithUnregisteredEmail()
     {
         loginPage.EnterEmail("unregistered@example.com");
-        loginPage.EnterPassword("grace1234");
+        loginPage.EnterPassword("jane1234");
         loginPage.ClickLoginButton();
         Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
     }
@@ -117,7 +116,7 @@ public class LoginTests
     [Test]
     public void LogInWithValidEmailButIncorrectPassword()
     {
-        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
+        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
         loginPage.EnterPassword("wrongPassword");
         loginPage.ClickLoginButton();
         Assert.That(loginPage.ErrorMessage.Displayed, Is.True);
@@ -126,8 +125,8 @@ public class LoginTests
     [Test]
     public void TestLoginWithCopyPasteAction()
     {
-        var email = "grace.gitungo@switchlinkafrica.co.ke";
-        var password = "grace1234";
+        var email = "janerose.muthoni@ngaocredit.com";
+        var password = "jane1234";
         loginPage.EnterEmail(email);
         loginPage.EnterPassword(password);
         loginPage.ClickLoginButton();
@@ -137,8 +136,8 @@ public class LoginTests
     [Test]
     public void LogInWithPasswordIncludingSpecialCharacters()
     {
-        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
-        loginPage.EnterPassword("grace1234");
+        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
+        loginPage.EnterPassword("jane1234");
         loginPage.ClickLoginButton();
         Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }

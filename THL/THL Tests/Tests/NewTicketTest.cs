@@ -29,8 +29,8 @@ public class Tests
 
         // Perform login
         var loginPage = new LoginPage(driver);
-        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
-        loginPage.EnterPassword("grace1234");
+        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
+        loginPage.EnterPassword("jane1234");
         loginPage.ClickLoginButton();
 
         // wait to be redirected to home page
