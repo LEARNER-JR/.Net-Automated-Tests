@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class TicketPage : BasePage
+public class TicketPage : BaseTest
 {
     public TicketPage(IWebDriver driver) : base(driver) { }
 
