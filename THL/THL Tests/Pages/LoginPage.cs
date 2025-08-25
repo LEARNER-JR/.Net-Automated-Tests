@@ -46,7 +46,6 @@ public class LoginPage
     {
         LoginButton.Click();
     }
-
     public void ClickForgotPassword()
     {
         ForgotPasswordLink.Click();

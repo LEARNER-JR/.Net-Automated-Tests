@@ -6,18 +6,37 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 [TestFixture]
 public class Tests
 {
     private IWebDriver driver;
     private NewTicketPage newTicketPage;
+    private WebDriver wait;
 
     [SetUp]
     public void SetUp()
     {
         driver = new ChromeDriver();
-        driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/home2");
+        driver.Manage().Window.Maximize();
+
+        // Use WebDriverWait instead of WebDriver for waiting
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(12));
+
+        //Navigate to login first
+        driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/");
+
+        // Perform login
+        var loginPage = new LoginPage(driver);
+        loginPage.EnterEmail("grace.gitungo@switchlinkafrica.co.ke");
+        loginPage.EnterPassword("grace1234");
+        loginPage.ClickLoginButton();
+
+        // wait to be redirected to home page
+        wait.Until(d => d.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"));
+
+        //raise new ticket
         newTicketPage = new NewTicketPage(driver);
     }
 
@@ -25,21 +44,21 @@ public class Tests
     public void VerifyNavigationToNewTicketPage()
     {
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [Test]
     public void EnsureLinkIsVisuallyDistinct()
     {
-        Assert.IsTrue(newTicketPage.NewTicketLink.Displayed);
-        Assert.IsTrue(newTicketPage.NewTicketLink.GetCssValue("cursor").Equals("pointer"));
+        Assert.That(newTicketPage.NewTicketLink.Displayed, Is.True);
+        Assert.That(newTicketPage.NewTicketLink.GetCssValue("cursor").Equals("pointer"), Is.True);
     }
 
     [Test]
     public void CheckLinkAccessibilityViaKeyboard()
     {
         newTicketPage.NewTicketLink.SendKeys(Keys.Tab);
-        Assert.IsTrue(newTicketPage.NewTicketLink.Equals(driver.SwitchTo().ActiveElement));
+        Assert.That(newTicketPage.NewTicketLink.Equals(driver.SwitchTo().ActiveElement), Is.True);
     }
 
     [Test]
@@ -52,7 +71,7 @@ public class Tests
         driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/home2");
         newTicketPage = new NewTicketPage(driver);
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
         driver.Quit();
 
         // Simulate tablet device
@@ -62,14 +81,14 @@ public class Tests
         driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/home2");
         newTicketPage = new NewTicketPage(driver);
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [Test]
     public void ValidateSameTabNavigation()
     {
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [Test]
@@ -78,7 +97,7 @@ public class Tests
         // Simulate not logged in by navigating to login page
         driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/login");
         newTicketPage.ClickNewTicketLink();
-        Assert.IsTrue(driver.Url.Contains("login"));
+        Assert.That(driver.Url.Contains("login"), Is.True);
     }
 
     [Test]
@@ -94,16 +113,17 @@ public class Tests
     [Test]
     public void CheckMalformedUrlBehavior()
     {
-        newTicketPage.NewTicketLink.SetAttribute("href", "/newticket");
+        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].setAttribute('href', '/newticket');",newTicketPage.NewTicketLink);
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual("https://sit-portal.trackinghub.co.ke/newticket", newTicketPage.GetCurrentUrl());
+        Assert.That(newTicketPage.GetCurrentUrl(),
+        Is.EqualTo("https://sit-portal.trackinghub.co.ke/newticket"));
     }
 
     [Test]
     public void EnsureNoErrorPageOnClick()
     {
         newTicketPage.ClickNewTicketLink();
-        Assert.IsFalse(driver.Url.Contains("404"));
+        Assert.That(driver.Url.Contains("404"), Is.False);
     }
 
     [Test]
@@ -114,7 +134,7 @@ public class Tests
         options.AddArgument("--disable-popup-blocking");
         driver = new ChromeDriver(options);
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [Test]
@@ -125,7 +145,7 @@ public class Tests
         options.AddArgument("--throttle-lan=1000");
         driver = new ChromeDriver(options);
         newTicketPage.ClickNewTicketLink();
-        Assert.IsTrue(driver.Url.Contains("loading"));
+        Assert.That(driver.Url.Contains("loading"), Is.True);
     }
 
     [Test]
@@ -135,22 +155,23 @@ public class Tests
         {
             newTicketPage.ClickNewTicketLink();
         }
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [Test]
     public void TestLinkWithScreenReaders()
     {
-        // This would typically require a screen reader simulation
-        Assert.IsTrue(newTicketPage.NewTicketLink.Text.Contains("New Ticket"));
+        // This would typically require a screen reader simulation (not feasible in Selenium - js is used instead)
+        Assert.That(newTicketPage.NewTicketLink.Text.Contains("New Ticket"), Is.True);
+        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].setAttribute('href', '/newticket');", newTicketPage.NewTicketLink);
     }
 
     [Test]
     public void CheckBehaviorWithJavaScriptErrors()
     {
-        // Simulate JavaScript error
-        driver.ExecuteScript("throw new Error('JavaScript error');");
-        Assert.IsTrue(newTicketPage.NewTicketLink.Displayed);
+        // Fix: Cast driver to IJavaScriptExecutor to use ExecuteScript
+        ((IJavaScriptExecutor)driver).ExecuteScript("throw new Error('JavaScript error');");
+        Assert.That(newTicketPage.NewTicketLink.Displayed, Is.True);
     }
 
     [Test]
@@ -158,7 +179,7 @@ public class Tests
     {
         driver.Manage().Window.Size = new System.Drawing.Size(800, 600);
         newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual(newTicketPage.Url, newTicketPage.GetCurrentUrl());
+        Assert.Equals(newTicketPage.Url, newTicketPage.GetCurrentUrl());
     }
 
     [TearDown]

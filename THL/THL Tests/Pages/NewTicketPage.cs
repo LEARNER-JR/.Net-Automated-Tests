@@ -1,12 +1,4 @@
-﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.PageObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
 public class NewTicketPage
 {
@@ -15,7 +7,7 @@ public class NewTicketPage
     public NewTicketPage(IWebDriver driver)
     {
         this.driver = driver;
-        PageFactory.InitElements(driver, this);
+        // Removed: PageFactory.InitElements(driver, this);
     }
 
     public string Url => "https://sit-portal.trackinghub.co.ke/newticket";

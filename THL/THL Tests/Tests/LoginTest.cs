@@ -48,11 +48,6 @@ public class LoginTests
     {
         loginPage.EnterPassword("testPassword");
         loginPage.ClickShowPassword();
-        // Replace all instances of Assert.AreEqual with Assert.That and Is.EqualTo
-
-        // Example replacement:
-        // Assert.AreEqual(loginPage.PasswordInput.GetAttribute("type"), "text");
-        // becomes:
         Assert.That(loginPage.PasswordInput.GetAttribute("type"), Is.EqualTo("text"));
     }
 
