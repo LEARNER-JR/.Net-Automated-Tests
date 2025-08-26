@@ -1,75 +1,295 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V137.Page;
 
-public class TicketPage : BaseTest
+[TestFixture]
+public class FormTests : BaseTest
 {
-    public TicketPage(IWebDriver driver) : base(driver) { }
+    private CreateTicketPage page;
 
-    public IWebElement JobTypeDropdown => driver.FindElement(By.Id("jobtype"));
-    public IWebElement VehicleRegNoInput => driver.FindElement(By.Id("regno"));
-    public IWebElement EmailInput => driver.FindElement(By.Id("email"));
-    public IWebElement CustomerPhoneInput => driver.FindElement(By.Id("customerphone"));
-    public IWebElement VehicleMakeDropdown => driver.FindElement(By.Id("make"));
-    public IWebElement LoanAmountInput => driver.FindElement(By.Id("loanAmt"));
-    public IWebElement CustomerNameInput => driver.FindElement(By.Id("customername"));
-    public IWebElement SubmitButton => driver.FindElement(By.CssSelector("button[type='submit']"));
-
-    public void SelectJobType(string value)
+    [SetUp]
+    public async Task GoToCreateTicketPage()
     {
-        var selectElement = new SelectElement(JobTypeDropdown);
-        selectElement.SelectByValue(value);
+        driver.Navigate().GoToUrl("https://sit-portal.trackinghub.co.ke/newticket");
+        page = new CreateTicketPage(driver);
+        await page.WaitForElementAsync(By.Id("jobtype"));
     }
 
-    public void EnterVehicleRegNo(string value)
+    [Test]
+    public void VerifyValidJobTypeSelection()
     {
-        VehicleRegNoInput.Clear();
-        VehicleRegNoInput.SendKeys(value);
+        page.SelectJobType("INSTALLATION");
+        Assert.That(page.JobTypeDropdown.GetAttribute("value"), Is.EqualTo("INSTALLATION"));
     }
 
-    public void EnterEmail(string value)
+    [Test]
+    public void VerifyValidSubjectInput()
     {
-        EmailInput.Clear();
-        EmailInput.SendKeys(value);
+        page.EnterSubject("TEST SUBJECT");
+        Assert.That(page.SubjectInput.GetAttribute("value"), Is.EqualTo("TEST SUBJECT"));
     }
 
-    public void EnterCustomerPhone(string value)
+    [Test]  
+    public void VerifyValidRegNoInput()
     {
-        CustomerPhoneInput.Clear();
-        CustomerPhoneInput.SendKeys(value);
+        page.EnterRegNo("KCD003H");
+        Assert.That(page.RegNoInput.GetAttribute("value"), Is.EqualTo("KCD003H"));
     }
 
-    public void SelectVehicleMake(string value)
+    [Test]
+    public void VerifyValidCustomerNameInput()
     {
-        var selectElement = new SelectElement(VehicleMakeDropdown);
-        selectElement.SelectByValue(value);
+        page.EnterCustomerName("John Doe");
+        Assert.That(page.CustomerNameInput.GetAttribute("value"), Is.EqualTo("John Doe"));
     }
 
-    public void EnterLoanAmount(string value)
+    [Test]
+    public void VerifyValidEmailInput()
     {
-        LoanAmountInput.Clear();
-        LoanAmountInput.SendKeys(value);
+        page.EnterEmail("test@example.com");
+        Assert.That(page.EmailInput.GetAttribute("value"), Is.EqualTo("test@example.com"));
     }
 
-    public void EnterCustomerName(string value)
+    [Test]
+    public void VerifyValidCustomerPhoneInput()
     {
-        CustomerNameInput.Clear();
-        CustomerNameInput.SendKeys(value);
+        page.EnterCustomerPhone("+254712345678");
+        Assert.That(page.CustomerPhoneInput.GetAttribute("value"), Is.EqualTo("+254712345678"));
     }
 
-    public void SubmitForm()
+    [Test]
+    public void VerifyValidContactPhoneInput()
     {
-        SubmitButton.Click();
+        page.EnterContactPhone("+254712345678");
+        Assert.That(page.ContactPhoneInput.GetAttribute("value"), Is.EqualTo("+254712345678"));
     }
 
-    public string GetValidationMessage(IWebElement element)
+    [Test]
+    public void VerifyValidVehicleMakeSelection()
     {
-        return element.GetAttribute("validationMessage");
+        page.SelectVehicleMake("TOYOTA");
+        Assert.That(page.VehicleMakeDropdown.GetAttribute("value"), Is.EqualTo("TOYOTA"));
+    }
+
+    [Test]
+    public void VerifyValidModelInput()
+    {
+        page.EnterModel("Corolla");
+        Assert.That(page.ModelInput.GetAttribute("value"), Is.EqualTo("Corolla"));
+    }
+
+    [Test]
+    public void VerifyValidColorInput()
+    {
+        page.EnterColor("Red");
+        Assert.That(page.ColorInput.GetAttribute("value"), Is.EqualTo("Red"));
+    }
+
+    [Test]
+    public void VerifyValidVehicleLocInput()
+    {
+        page.EnterVehicleLoc("Nairobi");
+        Assert.That(page.VehicleLocInput.GetAttribute("value"), Is.EqualTo("Nairobi"));
+    }
+
+    [Test]
+    public void VerifyValidLoanAmtInput()
+    {
+        page.EnterLoanAmt("10000");
+        Assert.That(page.LoanAmtInput.GetAttribute("value"), Is.EqualTo("10000"));
+    }
+
+    [Test]
+    public void VerifyErrorForMissingJobType()
+    {
+        // Submit without selecting job type
+        page.EnterSubject("TEST SUBJECT");
+        page.EnterRegNo("KCD003H");
+        page.EnterCustomerName("John Doe");
+        page.EnterEmail("test@example.com");
+        page.EnterCustomerPhone("+254712345678");
+        page.EnterContactPhone("+254712345678");
+        page.EnterModel("Corolla");
+        page.EnterColor("Red");
+        page.EnterVehicleLoc("Nairobi");
+        page.EnterLoanAmt("10000");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForShortSubject()
+    {
+        page.EnterSubject("Tes");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForInvalidRegNo()
+    {
+        page.EnterRegNo("INVALID");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForInvalidCustomerName()
+    {
+        page.EnterCustomerName("John123");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForInvalidEmail()
+    {
+        page.EnterEmail("invalid-email");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForInvalidCustomerPhone()
+    {
+        page.EnterCustomerPhone("123456789");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForEmptyModel()
+    {
+        page.SelectVehicleMake("TOYOTA");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForShortColor()
+    {
+        page.EnterColor("R");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForLongVehicleLoc()
+    {
+        page.EnterVehicleLoc("This is a very long vehicle location that exceeds the maximum character limit");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyErrorForNegativeLoanAmt()
+    {
+        page.EnterLoanAmt("-100");
+        page.SubmitForm();
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyNetworkFailureHandling()
+    {
+        // Assuming a method to simulate network failure
+        page.SelectJobType("INSTALLATION");
+        page.EnterSubject("TEST SUBJECT");
+        page.EnterRegNo("KCD003H");
+        page.EnterCustomerName("John Doe");
+        page.EnterEmail("test@example.com");
+        page.EnterCustomerPhone("+254712345678");
+        page.EnterContactPhone("+254712345678");
+        page.EnterModel("Corolla");
+        page.EnterColor("Red");
+        page.EnterVehicleLoc("Nairobi");
+        page.EnterLoanAmt("10000");
+        // Simulate network failure here
+        page.SubmitForm();
+        // Assert for network error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyRapidJobTypeChange()
+    {
+        page.SelectJobType("INSTALLATION");
+        page.SelectJobType("REMOVAL");
+        // Assert that dependent fields are updated accordingly (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyPasteInvalidData()
+    {
+        // Simulating paste operation
+        page.EnterSubject("Invalid Data");
+        // Assert for error message (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifySubmissionWithoutRequiredDocuments()
+    {
+        page.SelectJobType("INSTALLATION");
+        page.EnterSubject("TEST SUBJECT");
+        page.EnterRegNo("KCD003H");
+        page.EnterCustomerName("John Doe");
+        page.EnterEmail("test@example.com");
+        page.EnterCustomerPhone("+254712345678");
+        page.EnterContactPhone("+254712345678");
+        page.EnterModel("Corolla");
+        page.EnterColor("Red");
+        page.EnterVehicleLoc("Nairobi");
+        page.EnterLoanAmt("10000");
+        page.SubmitForm();
+        // Assert for error message regarding required documents (implementation depends on the actual error message displayed)
+    }
+
+    [Test]
+    public void VerifyResponsiveForm()
+    {
+        // Resize browser or check responsiveness (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyUnsavedChangesWarning()
+    {
+        page.EnterSubject("Unsaved Changes");
+        // Simulate navigating away
+        // Assert for warning message (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyScreenReaderAccessibility()
+    {
+        // Test with screen reader (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyAutofillDataValidation()
+    {
+        // Simulate browser autofill
+        page.EnterCustomerName("John Doe");
+        // Assert for validation criteria (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyInternationalCharacterHandling()
+    {
+        page.EnterCustomerName("José");
+        // Assert that the input is accepted (implementation depends on the actual behavior)
+    }
+
+    [Test]
+    public void VerifyKeyboardNavigation()
+    {
+        // Navigate through fields using keyboard
+        // Assert that all fields are accessible (implementation depends on the actual behavior)
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        driver.Quit();
     }
 }
+

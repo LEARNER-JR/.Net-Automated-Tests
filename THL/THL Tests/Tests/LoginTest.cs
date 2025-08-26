@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 
 [TestFixture]
@@ -32,6 +33,9 @@ public class LoginTests
         loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
         loginPage.EnterPassword("jane1234");
         loginPage.ClickLoginButton();
+
+        new WebDriverWait(driver, TimeSpan.FromSeconds(10))
+            .Until(d => d.Url.Contains("home2"));
         Assert.That(driver.Url.Contains("https://sit-portal.trackinghub.co.ke/home2"), Is.True);
     }
 

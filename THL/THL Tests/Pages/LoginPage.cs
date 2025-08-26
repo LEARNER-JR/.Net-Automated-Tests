@@ -15,7 +15,7 @@ public class LoginPage
     public LoginPage(IWebDriver driver)
     {
         this.driver = driver;
-        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        this.wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
     }
 
     public IWebElement EmailInput => wait.Until(d => d.FindElement(By.Id("email")));
@@ -49,6 +49,14 @@ public class LoginPage
     public void ClickForgotPassword()
     {
         ForgotPasswordLink.Click();
+    }
+
+    public async Task WaitForElementAsync(By by)
+    {
+        await Task.Run(() =>
+        {
+            wait.Until(drv => drv.FindElement(by).Displayed);
+        });
     }
 }
 
