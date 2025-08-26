@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V137.Page;
+using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
-public class FormTests : BaseTest
+public class CreateTicketTest : BaseTest
 {
     private CreateTicketPage page;
 
