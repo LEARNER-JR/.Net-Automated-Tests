@@ -1,0 +1,8 @@
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.csproj.AssemblyReference.cache
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.gentestingplatformentrypointinputcache.cache
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.genautoregisteredextensionsinputcache.cache
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.AssemblyInfoInputs.cache
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.AssemblyInfo.cs
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.csproj.CoreCompileInputs.cache
+D:\Auto\.Net Automated Tests\THL\SuperAdmin Tests\Wialon Tests\obj\Debug\net8.0\Wialon Tests.sourcelink.json
