@@ -285,10 +285,10 @@ public class CreateTicketTest : BaseTest
         // Assert that all fields are accessible (implementation depends on the actual behavior)
     }
 
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
-    }
+    // [TearDown]
+    // public void TearDown()
+    // {
+    //     driver.Quit();
+    // }
 }
 

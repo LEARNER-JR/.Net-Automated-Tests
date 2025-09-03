@@ -4,7 +4,7 @@ using OpenQA.Selenium.Chrome;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
-public class NewTicketTests
+public class CreateTicketPositiveTest : BaseTest
 {
     private IWebDriver _driver;
     private CreateTicketPositivePage _newTicketPage;
@@ -13,7 +13,8 @@ public class NewTicketTests
     [SetUp]
     public void SetUp()
     {
-        _driver = new ChromeDriver(); // Change to FirefoxDriver or SafariDriver as needed
+        _driver = new ChromeDriver();
+        _driver.Manage().Window.Maximize();
         _driver.Navigate().GoToUrl(BaseUrl);
         _newTicketPage = new CreateTicketPositivePage(_driver);
     }
@@ -22,35 +23,36 @@ public class NewTicketTests
     public void VerifyClickingNewTicketNavigatesToCorrectPage()
     {
         _newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual("https://sit-portal.trackinghub.co.ke/newticket", _driver.Url);
+        Assert.That(_driver.Url, Is.EqualTo("https://sit-portal.trackinghub.co.ke/newticket"));
     }
 
     [Test]
     public void CheckNewTicketLinkIsVisible()
     {
-        Assert.IsTrue(_newTicketPage.IsNewTicketLinkVisible(), "New Ticket link is not visible.");
+        Assert.That(_newTicketPage.IsNewTicketLinkVisible(), Is.True, "New Ticket link is not visible.");
     }
 
     [Test]
     public void EnsureNewTicketIconIsDisplayed()
     {
-        Assert.IsTrue(_newTicketPage.IsNewTicketIconDisplayed(), "New Ticket icon is not displayed.");
+        Assert.That(_newTicketPage.IsNewTicketIconDisplayed(), Is.True, "New Ticket icon is not displayed.");
     }
 
     [Test]
     public void TestNewTicketLinkFunctionalityAcrossBrowsers()
     {
-        // This test can be run in different browsers by changing the driver initialization in SetUp method.
         _newTicketPage.ClickNewTicketLink();
-        Assert.AreEqual("https://sit-portal.trackinghub.co.ke/newticket", _driver.Url);
+        Assert.That(_driver.Url, Is.EqualTo("https://sit-portal.trackinghub.co.ke/newticket"));
     }
 
     [Test]
     public void ValidateNewTicketLinkAccessibilityViaKeyboard()
     {
-        var newTicketLink = _driver.FindElement(_newTicketPage.NewTicketLink);
+        var newTicketLink = _newTicketPage.NewTicketLink;
         newTicketLink.SendKeys(Keys.Tab);
-        Assert.IsTrue(newTicketLink.Equals(_driver.SwitchTo().ActiveElement()), "New Ticket link is not focused.");
+
+        var activeElement = _driver.SwitchTo().ActiveElement();
+        Assert.That(newTicketLink, Is.EqualTo(activeElement), "New Ticket link is not focused.");
     }
 
     [TearDown]

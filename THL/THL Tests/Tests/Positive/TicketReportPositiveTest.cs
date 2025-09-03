@@ -1,22 +1,24 @@
-﻿using NUnit.Framework.Legacy;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using Assert = NUnit.Framework.Assert;
 using System.Drawing;
+using THL_Tests.Pages.Positive;
+using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
-public class TicketReportTest : BaseTest
+public class TicketReportPositiveTest : BaseTest
 {
-    private TicketReportPage _page;
+    private TicketReportPositivePage _page;
 
     [SetUp]
     public void Setup()
     {
         driver.Navigate().GoToUrl(baseUrl + "https://sit-portal.trackinghub.co.ke/tickets_report");
-        _page = new TicketReportPage(driver);
+        _page = new TicketReportPositivePage(driver);
     }
 
+    //Positive
     [Test]
     public void Test_FiltrationByVehicleRegNo_ShowsVehicleDropdown()
     {
@@ -26,6 +28,7 @@ public class TicketReportTest : BaseTest
         Assert.That(_page.IsVehicleDropdownVisible(), Is.True);
     }
 
+    //Positive
     [Test]
     public void Test_SelectAllInFiltration_ShowsAllVehicles()
     {
@@ -34,6 +37,7 @@ public class TicketReportTest : BaseTest
         Assert.That(vehicles.Count > 1, Is.True); // Fixed: Use Assert.That instead of Assert.IsTrue
     }
 
+    //Positive
     [Test]
     public void Test_StatusDropdown_DisplaysAllOptions()
     {
@@ -42,6 +46,7 @@ public class TicketReportTest : BaseTest
         NUnit.Framework.Legacy.CollectionAssert.AreEqual(expectedOptions, actualOptions);
     }
 
+    //Positive
     [Test]
     public void Test_DateRangeInput_ValidDateFormat()
     {
@@ -49,6 +54,7 @@ public class TicketReportTest : BaseTest
         // Assuming the system accepts this format, add validation if necessary
     }
 
+    //Positive
     [Test]
     public void Test_ExecuteButton_SubmitsForm()
     {
@@ -60,6 +66,7 @@ public class TicketReportTest : BaseTest
         Assert.That(_page.GetCurrentUrl(), Is.EqualTo("https://sit-portal.trackinghub.co.ke/tickets_report"));
     }
 
+    //Positive
     [Test]
     public void Test_VehicleSelected_DisplaysCorrectInfo()
     {
@@ -68,6 +75,7 @@ public class TicketReportTest : BaseTest
         // Add assertions to check if the report displays correct vehicle info
     }
 
+    //Positive
     [Test]
     public void Test_FormSubmission_ValidFields_ReturnsResults()
     {
@@ -79,28 +87,7 @@ public class TicketReportTest : BaseTest
         // Add assertions to verify results
     }
 
-    [Test]
-    public void Test_FormSubmission_WithoutSelections_ShowsValidationMessages()
-    {
-        _page.ClickExecute();
-        // Add assertions to verify validation messages
-    }
-
-    [Test]
-    public void Test_FormSubmission_InvalidDateFormat()
-    {
-        _page.SetDateRange("invalid date");
-        _page.ClickExecute();
-        // Add assertions to verify how the system responds
-    }
-
-    [Test]
-    public void Test_InvalidFiltrationOption_DoesNotCrash()
-    {
-        _page.SelectFiltration("Invalid Option");
-        // Add assertions to ensure the system handles it gracefully
-    }
-
+    //Positive
     [Test]
     public void Test_ByValuerName_HidesVehicleDropdown()
     {
@@ -108,39 +95,7 @@ public class TicketReportTest : BaseTest
         Assert.That(_page.IsVehicleDropdownVisible(), Is.False);
     }
 
-    [Test]
-    public void Test_EmptyTokenValue_FormSubmission_Rejected()
-    {
-        // Assuming a way to set the token value to empty
-        // _page.SetTokenValue(string.Empty);
-        _page.ClickExecute();
-        // Add assertions to ensure the request is rejected
-    }
-
-    [Test]
-    public void Test_RapidFiltrationChanges_NoErrors()
-    {
-        _page.SelectFiltration("By Vehicle Reg. No");
-        _page.SelectFiltration("All");
-        _page.SelectFiltration("By Valuer Name");
-        // Check for errors or state issues
-    }
-
-    [Test]
-    public void Test_SpecialCharactersInDateRange()
-    {
-        _page.SetDateRange("!@#$%^&*()");
-        _page.ClickExecute();
-        // Add assertions to verify how the system responds
-    }
-
-    [Test]
-    public void Test_ResponsiveForm_CheckElements()
-    {
-        driver.Manage().Window.Size = new Size(800, 600);
-        // Add assertions to verify elements are visible and functional
-    }
-
+    //Positive
     [Test]
     public void Test_SuccessMessage_OnSuccessfulSubmission()
     {
@@ -150,15 +105,6 @@ public class TicketReportTest : BaseTest
         _page.SetDateRange("01/01/2023 - 01/31/2023");
         _page.ClickExecute();
         // Add assertions to verify success message and redirection
-    }
-
-    [Test]
-    public void Test_MultipleVehiclesSelection_Processing()
-    {
-        // Assuming the system allows multiple selections
-        _page.SelectFiltration("By Vehicle Reg. No");
-        // Add logic to select multiple vehicles
-        // Add assertions to verify how the system processes this input
     }
 
     [TearDown]

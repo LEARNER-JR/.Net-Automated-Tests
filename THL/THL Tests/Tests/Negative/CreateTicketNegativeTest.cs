@@ -46,8 +46,6 @@ public class CreateTicketNegativeTest : BaseTest
     [Test]
     public void Test_NewTicketLink_JavaScriptDisabled()
     {
-        // Assuming we have a way to disable JavaScript in the browser settings
-        // This part is pseudo-code as it depends on the setup of the WebDriver
         var options = new ChromeOptions();
         options.AddArgument("--disable-javascript");
         _driver = new ChromeDriver(options);
