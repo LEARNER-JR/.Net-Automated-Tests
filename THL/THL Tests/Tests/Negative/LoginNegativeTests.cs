@@ -25,7 +25,9 @@ public class LoginNegativeTests
         loginPage.EnterPassword("anyPassword");
         loginPage.ClickSubmit();
 
-        Assert.IsTrue(loginPage.GetErrorMessage().Contains("Please enter a valid email address.")); // Adjust message as necessary
+        Assert.That(loginPage.GetErrorMessage(),
+            Does.Contain("Please enter a valid email address."),
+            "The system should show an error for invalid email format.");
     }
 
     [Test]
@@ -35,7 +37,9 @@ public class LoginNegativeTests
         loginPage.EnterPassword("wrongPassword");
         loginPage.ClickSubmit();
 
-        Assert.IsTrue(loginPage.GetErrorMessage().Contains("These credentials do not match our records.")); // Adjust message as necessary
+        Assert.That(loginPage.GetErrorMessage(),
+            Does.Contain("These credentials do not match our records."),
+            "The system should show an error for incorrect password.");
     }
 
     [Test]
@@ -43,8 +47,12 @@ public class LoginNegativeTests
     {
         loginPage.ClickSubmit();
 
-        Assert.IsTrue(loginPage.GetErrorMessage().Contains("The email field is required.")); // Adjust message as necessary
-        Assert.IsTrue(loginPage.GetErrorMessage().Contains("The password field is required.")); // Adjust message as necessary
+        Assert.That(loginPage.GetErrorMessage(),
+            Does.Contain("The email field is required."),
+            "The system should show an error when email is missing.");
+        Assert.That(loginPage.GetErrorMessage(),
+            Does.Contain("The password field is required."),
+            "The system should show an error when password is missing.");
     }
 
     [Test]
@@ -54,7 +62,9 @@ public class LoginNegativeTests
         loginPage.EnterPassword("123");
         loginPage.ClickSubmit();
 
-        Assert.IsTrue(loginPage.GetErrorMessage().Contains("The password must be at least 6 characters.")); // Adjust message as necessary
+        Assert.That(loginPage.GetErrorMessage(),
+            Does.Contain("The password must be at least 6 characters."),
+            "The system should show an error for too short password.");
     }
 
     [Test]
@@ -62,7 +72,9 @@ public class LoginNegativeTests
     {
         loginPage.ToggleShowPassword();
 
-        Assert.AreEqual("", loginPage.PasswordInput.GetAttribute("value"));
+        Assert.That(loginPage.PasswordInput.GetAttribute("value"),
+            Is.EqualTo(""),
+            "Password field should remain empty when toggling show without input.");
     }
 
     [TearDown]

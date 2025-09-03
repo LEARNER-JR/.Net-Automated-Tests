@@ -1,8 +1,5 @@
 ﻿using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using THL_Tests.Pages.Negative;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
@@ -13,7 +10,7 @@ public class TicketReportNegativeTest : BaseTest
     [SetUp]
     public void Setup()
     {
-        driver.Navigate().GoToUrl(baseUrl + "https://sit-portal.trackinghub.co.ke/tickets_report");
+        driver.Navigate().GoToUrl(baseUrl + "tickets_report");
         _page = new TicketReportNegativePage(driver);
     }
 
@@ -21,44 +18,42 @@ public class TicketReportNegativeTest : BaseTest
     public void Test_FormSubmission_WithoutSelections_ShowsValidationMessages()
     {
         _page.ClickExecute();
-        // Add assertions to verify validation messages
+        Assert.That(_page.IsValidationMessageDisplayed(),
+            Is.True, "Validation message should appear when submitting without selections.");
     }
 
     [Test]
     public void Test_FormSubmission_InvalidDateFormat()
     {
-        _page.SetDateRange("invalid date");
+        _page.SetInvalidDateRange("invalid date");
         _page.ClickExecute();
-        // Add assertions to verify how the system responds
+        Assert.That(_page.IsErrorMessageDisplayed(),
+            Is.True, "Error message should appear for invalid date format.");
     }
 
     [Test]
     public void Test_InvalidFiltrationOption_DoesNotCrash()
     {
-        _page.SelectFiltration("Invalid Option");
-        // Add assertions to ensure the system handles it gracefully
+        _page.SelectInvalidFiltration("Invalid Option");
+        Assert.That(driver.Url.Contains("tickets_report"),
+            Is.True, "System should stay on tickets report page when invalid filter is used.");
     }
 
     [Test]
     public void Test_EmptyTokenValue_FormSubmission_Rejected()
     {
-        // Assuming a way to set the token value to empty
-        // _page.SetTokenValue(string.Empty);
+        _page.ClearTokenValue();
         _page.ClickExecute();
-        // Add assertions to ensure the request is rejected
+        Assert.That(_page.IsValidationMessageDisplayed(),
+            Is.True, "Form should be rejected when token value is empty.");
     }
 
     [Test]
     public void Test_SpecialCharactersInDateRange()
     {
-        _page.SetDateRange("!@#$%^&*()");
+        _page.SetInvalidDateRange("!@#$%^&*()");
         _page.ClickExecute();
-        // Add assertions to verify how the system responds
-    }
-
-    [TearDown]
-    public void Cleanup()
-    {
-        driver.Quit();
+        Assert.That(_page.IsErrorMessageDisplayed(),
+            Is.True, "Error message should appear for special characters in date range.");
     }
 }

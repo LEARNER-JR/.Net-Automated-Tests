@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.Generic;
 
 public class TicketReportCreativePage
 {
@@ -13,6 +14,20 @@ public class TicketReportCreativePage
     // Locators
     public IWebElement FiltrationDropdown => _driver.FindElement(By.Id("filtration"));
     public IWebElement VehicleDropdown => _driver.FindElement(By.Id("units"));
+
+    //Generic filtration selector (used by tests)
+    public void SelectFiltration(string option)
+    {
+        var selectElement = new SelectElement(FiltrationDropdown);
+        selectElement.SelectByText(option);
+    }
+
+    //Helper
+    public string GetSelectedFiltration()
+    {
+        var selectElement = new SelectElement(FiltrationDropdown);
+        return selectElement.SelectedOption.Text;
+    }
 
     // Rapid filtration switching
     public void ChangeFiltrationRapidly()

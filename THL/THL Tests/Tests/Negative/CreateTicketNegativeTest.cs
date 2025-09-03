@@ -1,28 +1,25 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using Assert = NUnit.Framework.Assert;
 using OpenQA.Selenium.Chrome;
+using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
 public class CreateTicketNegativeTest : BaseTest
 {
-    private IWebDriver _driver;
     private CreateTicketNegativePage _newTicketPage;
-    private const string BaseUrl = "https://sit-portal.trackinghub.co.ke/home2";
 
     [SetUp]
     public void SetUp()
     {
-        _driver = new ChromeDriver();
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _newTicketPage = new NewTicketPage(_driver);
+        // BaseTest handles driver setup, login, and navigation to baseUrl
+        _newTicketPage = new CreateTicketNegativePage(driver);
     }
-
     [Test]
     public void Test_NewTicketLink_No404Error()
     {
         _newTicketPage.ClickNewTicketLink();
-        Assert.IsFalse(_driver.Url.Contains("404"), "The page should not lead to a 404 error.");
+        Assert.That(driver.Url.Contains("404"), Is.False,
+            "The page should not lead to a 404 error.");
     }
 
     [Test]
@@ -30,7 +27,8 @@ public class CreateTicketNegativeTest : BaseTest
     {
         // Simulate user not logged in
         _newTicketPage.ClickNewTicketLink();
-        Assert.IsTrue(_driver.Url.Contains("login"), "The user should be redirected to the login page.");
+        Assert.That(driver.Url.Contains("login"), Is.True,
+            "The user should be redirected to the login page.");
     }
 
     [Test]
@@ -40,7 +38,8 @@ public class CreateTicketNegativeTest : BaseTest
         {
             _newTicketPage.ClickNewTicketLink();
         }
-        Assert.IsFalse(_driver.Url.Contains("error"), "The application should not crash or hang.");
+        Assert.That(driver.Url.Contains("error"), Is.False,
+            "The application should not crash or hang.");
     }
 
     [Test]
@@ -48,17 +47,12 @@ public class CreateTicketNegativeTest : BaseTest
     {
         var options = new ChromeOptions();
         options.AddArgument("--disable-javascript");
-        _driver = new ChromeDriver(options);
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _newTicketPage = new NewTicketPage(_driver);
-        
-        _newTicketPage.ClickNewTicketLink();
-        Assert.IsTrue(_driver.Url.Contains("error"), "The link should not work with JavaScript disabled.");
-    }
+        driver = new ChromeDriver(options);
+        driver.Navigate().GoToUrl(baseUrl);
+        _newTicketPage = new CreateTicketNegativePage(driver);
 
-    [TearDown]
-    public void TearDown()
-    {
-        _driver.Quit();
+        _newTicketPage.ClickNewTicketLink();
+        Assert.That(driver  .Url.Contains("error"), Is.True,
+            "The link should not work with JavaScript disabled.");
     }
 }

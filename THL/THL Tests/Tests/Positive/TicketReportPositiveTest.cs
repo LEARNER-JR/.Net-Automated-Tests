@@ -3,7 +3,7 @@ using NUnit.Framework.Legacy;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Drawing;
-using THL_Tests.Pages.Positive;
+// using THL_Tests.Pages.Positive;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
@@ -105,11 +105,5 @@ public class TicketReportPositiveTest : BaseTest
         _page.SetDateRange("01/01/2023 - 01/31/2023");
         _page.ClickExecute();
         // Add assertions to verify success message and redirection
-    }
-
-    [TearDown]
-    public void Cleanup()
-    {
-        driver.Quit();
     }
 }
