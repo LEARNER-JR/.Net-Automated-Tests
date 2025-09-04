@@ -1,0 +1,5 @@
+D:\Auto\.Net Automated Tests\Upesi Web App\Scarlet Tests\obj\Debug\net8.0\Scarlet Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\Auto\.Net Automated Tests\Upesi Web App\Scarlet Tests\obj\Debug\net8.0\Scarlet Tests.AssemblyInfoInputs.cache
+D:\Auto\.Net Automated Tests\Upesi Web App\Scarlet Tests\obj\Debug\net8.0\Scarlet Tests.AssemblyInfo.cs
+D:\Auto\.Net Automated Tests\Upesi Web App\Scarlet Tests\obj\Debug\net8.0\Scarlet Tests.csproj.CoreCompileInputs.cache
+D:\Auto\.Net Automated Tests\Upesi Web App\Scarlet Tests\obj\Debug\net8.0\Scarlet Tests.sourcelink.json
