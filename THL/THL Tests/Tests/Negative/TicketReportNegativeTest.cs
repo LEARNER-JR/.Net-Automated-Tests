@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
+using THL_Tests.Tests;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]

@@ -4,38 +4,57 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-[TestFixture]
-public abstract class BaseTest
+namespace THL_Tests.Tests
 {
-    protected IWebDriver driver;
-    protected WebDriverWait wait;
-    protected LoginPage loginPage;
-    protected string baseUrl = "https://sit-portal.trackinghub.co.ke/";
-
-    [SetUp]
-    public async Task Setup()
+    [TestFixture]
+    public abstract class BaseTest
     {
-        var options = new ChromeOptions();
-        options.AddArgument("log-level=3");
-        driver = new ChromeDriver(options);
-        driver.Manage().Window.Maximize();
-        driver.Navigate().GoToUrl(baseUrl);
+        protected IWebDriver driver;
+        protected WebDriverWait wait;
+        //protected LoginPage loginPage;
+        protected string baseUrl = "https://sit-portal.trackinghub.co.ke/";
 
-        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(7));
-        loginPage = new LoginPage(driver);
+        [SetUp]
+        public async Task Setup()
+        {
+            var options = new ChromeOptions();
+            options.AddArgument("log-level=3");
+            driver = new ChromeDriver(options);
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(baseUrl);
 
-        // Perform login automatically before each test
-        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
-        loginPage.EnterPassword("jane1234");
-        loginPage.ClickLoginButton();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(7));
 
-        // Async wait for dashboard to load
-        await loginPage.WaitForElementAsync(By.CssSelector("body > div.wrapper"));
-    }
+            //loginPage = new LoginPage(driver);
 
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
+            //// Perform login automatically before each test
+            //loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
+            //loginPage.EnterPassword("jane1234");
+            //loginPage.ClickLoginButton();
+
+            //// Async wait for dashboard to load
+            //await loginPage.WaitForElementAsync(By.CssSelector("body > div.wrapper"));
+
+            var emailInput = wait.Until(d => d.FindElement(By.Id("email")));
+            emailInput.Clear();
+            emailInput.SendKeys("janerose.muthoni@ngaocredit.com");
+
+            var passwordInput = driver.FindElement(By.Id("password"));
+            passwordInput.Clear();
+            passwordInput.SendKeys("jane1234");
+
+            var loginButton = driver.FindElement(By.CssSelector("button[type='submit']"));
+            loginButton.Click();
+
+            // Async wait for dashboard wrapper
+            await Task.Run(() =>
+                wait.Until(d => d.FindElement(By.CssSelector("body > div.wrapper"))));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            driver.Quit();
+        }
     }
 }

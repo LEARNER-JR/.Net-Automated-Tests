@@ -3,6 +3,8 @@ using NUnit.Framework.Legacy;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Drawing;
+using THL_Tests.Tests;
+
 // using THL_Tests.Pages.Positive;
 using Assert = NUnit.Framework.Assert;
 

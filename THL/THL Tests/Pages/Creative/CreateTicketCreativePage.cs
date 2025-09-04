@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using THL_Tests.Tests;
 
 public class CreateTicketCreativePage : BaseTest
 {
@@ -27,7 +28,7 @@ public class CreateTicketCreativePage : BaseTest
     {
         try
         {
-            var newTicketLink = wait.Until(driver => driver.FindElement(By.XPath("/html/body/div[1]/aside[1]/div/div[4]/div/div/nav/ul/li[9]/a")));
+            var newTicketLink = wait.Until(driver =>driver.FindElement(By.CssSelector("a.nav-link[href='/newticket']")));
             return newTicketLink.Displayed;
         }
         catch (NoSuchElementException)
