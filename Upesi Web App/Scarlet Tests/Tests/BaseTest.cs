@@ -11,8 +11,11 @@ public abstract class BaseTest
     [SetUp]
     public async Task SetUp()
     {
-        driver = new ChromeDriver();
-        driver.Manage().Window.Maximize();
+         var options = new ChromeOptions();
+        options.AddArgument("--start-maximized");
+        options.PageLoadStrategy = PageLoadStrategy.Eager;
+
+        driver = new ChromeDriver(options);
         driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/login");
 
         loginPage = new LoginPositivePage(driver);
@@ -23,9 +26,9 @@ public abstract class BaseTest
         );
     }
 
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
-    }
-}
+
+    //[TearDown]
+    //public abstract void TearDown();
+
+
+        }

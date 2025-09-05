@@ -8,12 +8,13 @@ public class LoginPositivePage
 {
     private readonly IWebDriver _driver;
     private readonly WebDriverWait _wait;
-    private Wait<WebDriver> wait = new FluentWait<>(driver)
 
     public LoginPositivePage(IWebDriver driver)
     {
         _driver = driver ?? throw new ArgumentNullException(nameof(driver));
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        _wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+        
     }
 
     private IWebElement ContinueOrLoginButton => _wait.Until(d =>
@@ -32,14 +33,18 @@ public class LoginPositivePage
     private IWebElement OTPInput => _wait.Until(d => d.FindElement(By.Name("OTP")));
 
     // Extract OTP text dynamically
-    public async Task<string> GetOTPAsync()
+    public  string GetOTPAsync()
     {
-        return await Task.Run(() =>
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10))
         {
-            var otpHeader = _wait.Until(d => d.FindElement(By.XPath("//h4[contains(text(),'TEST OTP:')]")));
-            string fullText = otpHeader.Text;   // e.g. "TEST OTP: LGSTUJ"
-            return Regex.Replace(fullText, @"TEST OTP:\s*", ""); // returns just "LGSTUJ"
-        });
+            PollingInterval = TimeSpan.FromMilliseconds(500)
+        };
+        wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+        Console.WriteLine(_driver.PageSource);
+        
+        var otpHeader = wait.Until(d => d.FindElement(By.XPath("//h4[contains(text(),'TEST OTP:')]")));
+        string fullText = otpHeader.Text;
+        return Regex.Replace(fullText, @"TEST OTP:\s*", "");
     }
 
     // Actions
@@ -86,11 +91,30 @@ public class LoginPositivePage
         await EnterEmailAsync(email);
         await EnterPasswordAsync(password);
         await ClickContinueAsync();
-        _wait.Until(d => d.FindElement(By.Name("otp")));
+       // _wait.Until(ElementIsVisible(By.ClassName("alert alert-danger")));
 
-        string otp = await GetOTPAsync();
+        string otp =  GetOTPAsync();
         await EnterOTPAsync(otp);
 
         await ClickLoginAsync();
+    }
+
+    private  Func<IWebDriver, IWebElement> ElementIsVisible(By locator)
+    {
+        return driver =>
+        {
+            try
+            {
+                return driver.FindElement(locator);
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        };
     }
 }

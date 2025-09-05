@@ -27,4 +27,9 @@ public class LoginPositiveTest : BaseTest
         Assert.That(logoutBtn.Displayed, Is.True,
             "Logout button should be visible after login.");
     }
+
+    //public override void TearDown()
+    //{
+    //    driver.Quit();
+    //}
 }
