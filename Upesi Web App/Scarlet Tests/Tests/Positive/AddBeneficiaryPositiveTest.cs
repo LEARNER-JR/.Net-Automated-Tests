@@ -1,42 +1,72 @@
 ﻿using NUnit.Framework;
-using Scarlet_Tests.Tests;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 [TestFixture]
-public class AddBeneficiaryPositiveTest
+public class AddBeneficiaryPositiveTests
 {
-    private AddBeneficiaryPage _page;
+    private IWebDriver _driver;
+    private AddBeneficiaryPositivePage _addBeneficiaryPage;
+    private const string BaseUrl = "https://sitwebapp.upesimts.com/add-beneficiary";
 
     [SetUp]
-    public void TestSetup()
+    public void Setup()
     {
-        driver.Navigate().GoToUrl(baseUrl + "add-beneficiary");
-        _page = new AddBeneficiaryPage(driver);
+        _driver = new ChromeDriver();
+        _driver.Navigate().GoToUrl(BaseUrl);
+        _addBeneficiaryPage = new AddBeneficiaryPositivePage(_driver);
     }
 
     [Test]
-    public void VerifyAddBeneficiaryTextIsDisplayed()
+    public void VerifyAddBeneficiaryOptionIsDisplayed()
     {
-        Assert.That(_page.AddBeneficiaryText.Displayed, Is.True);
+        Assert.That(_addBeneficiaryPage.IsAddBeneficiaryVisible(),
+            Is.True, "Add Beneficiary option is not displayed.");
     }
 
     [Test]
-    public void EnsurePlusIconIsVisible()
+    public void EnsureClickingPlusIconInitiatesAddBeneficiaryProcess()
     {
-        Assert.That(_page.AddBeneficiaryIcon.Displayed, Is.True);
+        _addBeneficiaryPage.ClickPlusIcon();
+
+        // Example: check if form appears
+        var form = _driver.FindElement(By.Id("beneficiaryForm"));
+        Assert.That(form.Displayed,
+            Is.True, "Beneficiary form is not displayed after clicking plus icon.");
     }
 
     [Test]
-    public void ValidateSuccessfulAdditionOfBeneficiary()
+    public void CheckAddBeneficiaryTextVisibilityOnVariousScreenSizes()
     {
-        _page.AddBeneficiary("John Doe");
-        Assert.That(_page.GetConfirmationMessage(), Is.EqualTo("Beneficiary added successfully!"));
+        string text = _addBeneficiaryPage.GetBeneficiaryText();
+        Assert.That(string.IsNullOrWhiteSpace(text),
+            Is.False, "Add Beneficiary text is not visible or legible.");
     }
 
     [Test]
-    public void AddMultipleBeneficiariesInOneSession()
+    public void ValidateIconAppearanceOnHoverOrClick()
     {
-        _page.AddBeneficiary("John Doe");
-        _page.AddBeneficiary("Jane Smith");
-        Assert.That(_page.GetConfirmationMessage(), Does.Contain("Beneficiary added successfully"));
+        // TODO: Implement hover/click style check
+        // Example (pseudo):
+        // var icon = _addBeneficiaryPage.PlusIcon;
+        // string initialClass = icon.GetAttribute("class");
+        // new Actions(_driver).MoveToElement(icon).Perform();
+        // string hoverClass = icon.GetAttribute("class");
+        // Assert.That(initialClass, Is.Not.EqualTo(hoverClass), "Icon style did not change on hover.");
+    }
+
+    [Test]
+    public void ConfirmNavigationToBeneficiaryAdditionForm()
+    {
+        _addBeneficiaryPage.ClickPlusIcon();
+        Assert.That(_driver.Url,
+            Does.Contain("beneficiaryForm"),
+            "Did not navigate to the beneficiary addition form.");
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        _driver.Quit();
     }
 }

@@ -1,51 +1,76 @@
 ﻿using NUnit.Framework;
-using Scarlet_Tests.Tests;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 [TestFixture]
-public class AddBeneficiaryCreativeTest
+public class AddBeneficiaryCreativeTests
 {
-    private AddBeneficiaryCreativeTest _page;
+    private IWebDriver _driver;
+    private AddBeneficiaryCreativePage _addBeneficiaryPage;
+    private const string BaseUrl = "https://sitwebapp.upesimts.com/add-beneficiary";
 
     [SetUp]
-    public void TestSetup()
+    public void SetUp()
     {
-        driver.Navigate().GoToUrl(baseUrl + "add-beneficiary");
-        _page = new AddBeneficiaryCreativePage(driver);
+        _driver = new ChromeDriver();
+        _driver.Navigate().GoToUrl(BaseUrl);
+        _addBeneficiaryPage = new AddBeneficiaryCreativePage(_driver);
     }
 
     [Test]
-    public void TestClickingAddBeneficiaryTriggersAction()
+    public void TestAddBeneficiaryOffline()
     {
-        _page.ClickAddBeneficiaryArea();
-        // TODO: Assert modal/form opened
+        // Simulate offline
+        var offlineScript = "navigator.serviceWorker.controller.postMessage({ type: 'SET_OFFLINE' });";
+        ((IJavaScriptExecutor)_driver).ExecuteScript(offlineScript);
+
+        _addBeneficiaryPage.ClickAddBeneficiary();
+        _addBeneficiaryPage.EnterBeneficiaryName("John Doe");
+        _addBeneficiaryPage.Submit();
+
+        Assert.That(_addBeneficiaryPage.GetErrorMessage(),
+            Does.Contain("You are offline"),
+            "Expected offline error message not displayed.");
     }
 
     [Test]
-    public void TestMultipleClicksOnAddBeneficiaryArea()
+    public void TestAddBeneficiaryOnMultipleDevices()
     {
-        _page.ClickAddBeneficiaryArea();
-        _page.ClickAddBeneficiaryArea();
-        // TODO: Assert no duplicates created
+        // This test would typically require different setups for mobile, tablet, and desktop.
+        // Here we just assert that the button is present on the desktop version.
+        Assert.That(_addBeneficiaryPage.AddBeneficiaryButton.Displayed,
+            Is.True, "Add Beneficiary button should be visible.");
     }
 
     [Test]
-    public void CheckInterfaceResponsiveness()
+    public void TestRapidClickOnAddBeneficiary()
     {
-        driver.Manage().Window.Size = new System.Drawing.Size(800, 600);
-        Assert.That(_page.AddBeneficiaryText.Displayed, Is.True, "Page should adapt to smaller screens.");
+        for (int i = 0; i < 5; i++)
+        {
+            _addBeneficiaryPage.ClickAddBeneficiary();
+        }
+
+        // Assuming the application should prevent multiple requests
+        Assert.That(_addBeneficiaryPage.AddBeneficiaryButton.Enabled,
+            Is.True, "Add Beneficiary button should still be enabled after rapid clicks.");
     }
 
     [Test]
-    public void VerifyGracefulHandlingOfInterruptions()
+    public void TestAddBeneficiaryWithSpecialCharacters()
     {
-        // Simulate a crash/interruption (manual or advanced setup)
-        Assert.Pass("Manual simulation needed for crash recovery.");
+        _addBeneficiaryPage.ClickAddBeneficiary();
+        _addBeneficiaryPage.EnterBeneficiaryName("John @Doe #2023");
+        _addBeneficiaryPage.Submit();
+
+        // Assuming successful addition redirects or shows a success message
+        Assert.That(_addBeneficiaryPage.GetErrorMessage(),
+            Does.Not.Contain("error"),
+            "No error should be present when adding special characters.");
     }
 
-    [Test]
-    public void ImplementAccessibilityTest()
+    [TearDown]
+    public void TearDown()
     {
-        // Example: tab navigation, aria-label checks
-        Assert.Pass("Accessibility test requires screen reader integration.");
+        _driver.Quit();
     }
 }

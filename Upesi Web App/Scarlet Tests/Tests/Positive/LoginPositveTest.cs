@@ -1,66 +1,30 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
-using Assert = NUnit.Framework.Assert;
-
 
 [TestFixture]
-public class LoginPositveTest
+public class LoginPositiveTest : BaseTest
 {
-    private IWebDriver driver;
-    private LoginPositivePage loginPage;
-    private const string baseUrl = "https://sitwebapp.upesimts.com/login?country=/login";
-
-    [SetUp]
-    public void SetUp()
+    [Test]
+    public async Task TestUserIsRedirectedToDashboard()
     {
-        driver = new ChromeDriver(); // Change to FirefoxDriver() or other for different browsers
-        driver.Navigate().GoToUrl(baseUrl);
-        loginPage = new LoginPositivePage(driver);
+        // BaseTest already logged in, so just check URL
+        Assert.That(driver.Url, Does.Contain("dashboard"),
+            "User was not redirected to dashboard after login.");
     }
 
     [Test]
-    public void VerifyLoginLinkNavigation()
+    public async Task TestNavigationMenuIsVisible()
     {
-        loginPage.ClickLoginLink();
-        Assert.AreEqual(driver.Url, "https://sitwebapp.upesimts.com/login?country=/login", "Navigation to login page failed.");
+        var navMenu = driver.FindElement(By.Id("main-nav"));
+        Assert.That(navMenu.Displayed, Is.True,
+            "Navigation menu should be visible after login.");
     }
 
     [Test]
-    public void ConfirmLoginLinkAccessibleViaKeyboard()
+    public async Task TestLogoutButtonIsPresent()
     {
-        var actions = new OpenQA.Selenium.Interactions.Actions(driver);
-        actions.MoveToElement(loginPage.GetLoginLinkHref()).SendKeys(Keys.Enter).Perform();
-        Assert.AreEqual(driver.Url, "https://sitwebapp.upesimts.com/login?country=/login", "Login link not accessible via keyboard.");
-    }
-
-    [Test]
-    public void CheckLoginLinkVisibilityAndLabel()
-    {
-        Assert.IsTrue(loginPage.IsLoginLinkVisible(), "Login link is not visible.");
-        Assert.AreEqual(loginPage.GetLoginLinkHref(), "Login", "Login link label is incorrect.");
-    }
-
-    [Test]
-    public void EnsureLoginLinkWorksInDifferentBrowsers()
-    {
-        // This test would be run in different browser instances (e.g., Chrome, Firefox, Safari)
-        loginPage.ClickLoginLink();
-        Assert.AreEqual(driver.Url, "https://sitwebapp.upesimts.com/login?country=/login", "Login link does not work in the current browser.");
-    }
-
-    [Test]
-    public void ValidateLoginLinkUrlStructureWithCountryChange()
-    {
-        string newCountry = "/us";
-        driver.Navigate().GoToUrl($"https://sitwebapp.upesimts.com/login?country={newCountry}");
-        Assert.AreEqual(driver.Url, $"https://sitwebapp.upesimts.com/login?country={newCountry}", "URL structure with country change is incorrect.");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
+        var logoutBtn = driver.FindElement(By.CssSelector(".logout-btn"));
+        Assert.That(logoutBtn.Displayed, Is.True,
+            "Logout button should be visible after login.");
     }
 }

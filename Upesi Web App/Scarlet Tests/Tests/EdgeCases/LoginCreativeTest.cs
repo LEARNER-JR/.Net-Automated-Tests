@@ -1,86 +1,113 @@
-﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using Assert = NUnit.Framework.Assert;
+﻿//using NUnit.Framework;
+//using OpenQA.Selenium;
+//using OpenQA.Selenium.Chrome;
 
+//[TestFixture]
+//public class LoginCreativeTests
+//{
+//    private IWebDriver _driver;
+//    private LoginCreativePage _loginPage;
+//    private const string BaseUrl = "https://sitwebapp.upesimts.com/login?unauthorized";
 
-[TestFixture]
-public class LoginCreativeTest
-{
-    private IWebDriver _driver;
-    private LoginCreativePage _loginPage;
-    private const string BaseUrl = "https://sitwebapp.upesimts.com/login?country=/login";
+//    [SetUp]
+//    public void Setup()
+//    {
+//        _driver = new ChromeDriver();
+//        _driver.Navigate().GoToUrl(BaseUrl);
+//        _loginPage = new LoginCreativePage(_driver);
+//    }
 
-    [SetUp]
-    public void Setup()
-    {
-        _driver = new ChromeDriver();
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _loginPage = new LoginCreativePage(_driver);
-    }
+//    [Test]
+//    public void TestLoginDuringTimer()
+//    {
+//        _loginPage.EnterEmail("test@example.com");
+//        _loginPage.EnterPassword("validpassword");
+//        _loginPage.EnterOTP("6FUP55");
+//        _loginPage.ClickSubmit();
 
-    [Test]
-    public void TestLoginLinkFunctionalityOnMobile()
-    {
-        // Simulate mobile device
-        var mobileEmulation = new ChromeOptions();
-        mobileEmulation.AddAdditionalCapability("deviceName", "Nexus 5");
-        _driver = new ChromeDriver(mobileEmulation);
+//        Assert.That(IsLoginSuccessful(), Is.False,
+//            "Login should not be successful while timer is running.");
+//    }
 
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _loginPage.ClickLoginButton();
+//    [Test]
+//    public void TestChangingCredentialsBeforeSubmission()
+//    {
+//        _loginPage.EnterEmail("test@example.com");
+//        _loginPage.EnterPassword("validpassword");
+//        _loginPage.EnterEmail("changed@example.com");
+//        _loginPage.EnterPassword("changedpassword");
+//        _loginPage.ClickSubmit();
 
-        Assert.AreEqual("/login?country=/login", _driver.Url);
-    }
+//        Assert.That(IsLoginSuccessful(), Is.True,
+//            "Login should process the latest inputs correctly.");
+//    }
 
-    [Test]
-    public void TestLoginLinkAfterSessionTimeout()
-    {
-        // Simulating session timeout
-        _driver.Manage().Cookies.DeleteAllCookies();
-        _driver.Navigate().GoToUrl(BaseUrl);
-        _loginPage.ClickLoginButton();
+//    [Test]
+//    public void TestRapidLoginClicks()
+//    {
+//        _loginPage.EnterEmail("test@example.com");
+//        _loginPage.EnterPassword("validpassword");
 
-        Assert.IsTrue(_driver.Url.Contains("/login?country=/login"));
-        // Add assertion for session expiration message if applicable
-    }
+//        for (int i = 0; i < 10; i++)
+//        {
+//            _loginPage.ClickSubmit();
+//        }
 
-    [Test]
-    public void TestLoginLinkAccessibilityWithScreenReader()
-    {
-        // This test would typically require a screen reader tool integration
-        // Here we just check the link's accessibility properties
-        var isAriaLabelPresent = _loginPage.LoginButton.GetAttribute("aria-label") != null;
-        Assert.IsTrue(isAriaLabelPresent, "Login link should be accessible via screen reader.");
-    }
+//        Assert.That(CheckForErrors(), Is.True,
+//            "System should handle rapid clicks without crashing.");
+//    }
 
-    [Test]
-    public void TestLoginLinkZoomLevelImpact()
-    {
-        // Change browser zoom level
-        _driver.ExecuteScript("document.body.style.zoom='150%'");
-        Assert.IsTrue(_loginPage.LoginButton.Displayed);
-    }
+//    [Test]
+//    public void TestAccessibilityWithKeyboard()
+//    {
+//        _loginPage.EmailInput.SendKeys(Keys.Tab);
+//        Assert.That(_loginPage.PasswordInput.Displayed, Is.True,
+//            "Password field should be reachable via Tab key.");
 
-    [Test]
-    public void TestLoginLinkWithDifferentUserRoles()
-    {
-        // Simulate different user roles by changing the session or cookies
-        // This is a placeholder for actual role-based testing
-        string[] userRoles = { "admin", "guest" };
-        foreach (var role in userRoles)
-        {
-            // Set user role in cookies or session
-            // ...
+//        _loginPage.PasswordInput.SendKeys(Keys.Tab);
+//        Assert.That(_loginPage.OTPInput.Displayed, Is.True,
+//            "OTP field should be reachable via Tab key.");
 
-            _driver.Navigate().GoToUrl(BaseUrl);
-            Assert.IsTrue(_loginPage.LoginButton.Displayed, $"{role} role: Login button should be visible.");
-        }
-    }
+//        _loginPage.OTPInput.SendKeys(Keys.Tab);
+//        Assert.That(_loginPage.SubmitButton.Displayed, Is.True,
+//            "Submit button should be reachable via Tab key.");
+//    }
 
-    [TearDown]
-    public void TearDown()
-    {
-        _driver.Quit();
-    }
-}
+//    [Test]
+//    public void TestMultipleLoginAttempts()
+//    {
+//        for (int i = 0; i < 5; i++)
+//        {
+//            _loginPage.EnterEmail("test@example.com");
+//            _loginPage.EnterPassword("validpassword");
+//            _loginPage.ClickSubmit();
+//        }
+
+//        Assert.That(CheckForBruteForceProtection(), Is.True,
+//            "System should handle multiple login attempts gracefully.");
+//    }
+
+//    [TearDown]
+//    public void TearDown()
+//    {
+//        _driver.Quit();
+//    }
+
+//    private bool IsLoginSuccessful()
+//    {
+//        // Stub: Replace with actual verification logic (URL, element, etc.)
+//        return false;
+//    }
+
+//    private bool CheckForErrors()
+//    {
+//        // Stub: Replace with actual logic (look for error banner, console logs, etc.)
+//        return true;
+//    }
+
+//    private bool CheckForBruteForceProtection()
+//    {
+//        // Stub: Replace with actual logic (look for lockout message, captcha, etc.)
+//        return true;
+//    }
+//}

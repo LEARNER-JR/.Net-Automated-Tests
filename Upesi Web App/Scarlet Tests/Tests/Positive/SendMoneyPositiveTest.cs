@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using Assert = NUnit.Framework.Assert;
-
 
 [TestFixture]
 public class SendMoneyPositiveTest
@@ -22,30 +20,35 @@ public class SendMoneyPositiveTest
     public void VerifySendMoneyLinkNavigation()
     {
         _moneyTransferPage.ClickSendMoneyLink();
-        Assert.AreEqual("https://sitwebapp.upesimts.com/money-transfer", _driver.Url);
+        Assert.That(_driver.Url,
+            Is.EqualTo("https://sitwebapp.upesimts.com/money-transfer"),
+            "Send Money link did not navigate to the expected URL.");
     }
 
     [Test]
     public void CheckSendMoneyLinkTextVisibility()
     {
-        Assert.IsTrue(_moneyTransferPage.IsSendMoneyLinkDisplayed());
-        Assert.AreEqual("Send Money", _moneyTransferPage.GetSendMoneyLinkText());
+        Assert.That(_moneyTransferPage.IsSendMoneyLinkDisplayed(),
+            Is.True, "Send Money link is not displayed.");
+
+        Assert.That(_moneyTransferPage.GetSendMoneyLinkText(),
+            Is.EqualTo("Send Money"), "Send Money link text does not match.");
     }
 
     [Test]
     public void EnsureLinkIsAccessibleViaKeyboardNavigation()
     {
-        _moneyTransferPage.SendMoneyLink.SendKeys(Keys.Tab);
-        Assert.IsTrue(_moneyTransferPage.SendMoneyLink.Equals(_driver.SwitchTo().ActiveElement));
+        Assert.That(_moneyTransferPage.IsSendMoneyLinkKeyboardAccessible(),
+            Is.True, "Send Money link is not reachable via keyboard navigation.");
     }
 
     [Test]
     public void TestLinkFunctionalityOnDifferentDevices()
     {
-        // Code to simulate different devices would go here, e.g., using browser emulation.
-        // For simplicity, we can just check the link functionality as is.
         _moneyTransferPage.ClickSendMoneyLink();
-        Assert.AreEqual("https://sitwebapp.upesimts.com/money-transfer", _driver.Url);
+        Assert.That(_driver.Url,
+            Is.EqualTo("https://sitwebapp.upesimts.com/money-transfer"),
+            "Send Money link did not function correctly on simulated device.");
     }
 
     [Test]
@@ -53,7 +56,9 @@ public class SendMoneyPositiveTest
     {
         string originalWindow = _driver.CurrentWindowHandle;
         _moneyTransferPage.ClickSendMoneyLink();
-        Assert.AreEqual(originalWindow, _driver.CurrentWindowHandle);
+        Assert.That(_driver.CurrentWindowHandle,
+            Is.EqualTo(originalWindow),
+            "Send Money link opened in a new tab instead of the same one.");
     }
 
     [TearDown]

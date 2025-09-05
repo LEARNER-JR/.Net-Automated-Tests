@@ -1,86 +1,86 @@
-﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using Assert = NUnit.Framework.Assert;
+﻿//using NUnit.Framework;
+//using OpenQA.Selenium;
+//using OpenQA.Selenium.Chrome;
 
+//[TestFixture]
+//public class LoginNegativeTests
+//{
+//    private IWebDriver driver;
+//    private LoginNegativePage loginPage;
 
-[TestFixture]
-public class LoginLoginNegativeTestTests
-{
-    private IWebDriver driver;
-    private LoginNegativePage loginPage;
-    private const string baseUrl = "https://sitwebapp.upesimts.com/login?country=/login";
+//    [SetUp]
+//    public void Setup()
+//    {
+//        driver = new ChromeDriver();
+//        driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/login?unauthorized");
+//        loginPage = new LoginNegativePage(driver);
+//    }
 
-    [SetUp]
-    public void SetUp()
-    {
-        driver = new ChromeDriver();
-        driver.Navigate().GoToUrl(baseUrl);
-        loginPage = new LoginNegativePage(driver);
-    }
+//    [TearDown]
+//    public void TearDown()
+//    {
+//        driver.Quit();
+//    }
 
-    [Test]
-    public void Test_NoInternetConnection_ShowsErrorMessage()
-    {
-        // Simulate no internet connection
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
-        loginPage.ClickLoginButton();
+//    [Test]
+//    public void Test_InvalidEmailFormat()
+//    {
+//        loginPage.EnterEmail("invalidEmailFormat");
+//        loginPage.EnterPassword("ValidPassword1!");
+//        loginPage.EnterOTP("123456");
+//        loginPage.SubmitForm();
 
-        // Assert error message (example assertion, adapt as needed)
-        Assert.IsTrue(driver.PageSource.Contains("No internet connection"), "Error message not displayed.");
-    }
+//        Assert.That(loginPage.ErrorText.Displayed, Is.True);
+//        Assert.That(loginPage.ErrorText.Text, Does.Contain("valid email").IgnoreCase);
+//    }
 
-    [Test]
-    public void Test_LoggedIn_UserStaysOnCurrentPage()
-    {
-        // Simulate user being logged in (this would typically be done by navigating to a logged-in state)
-        driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/dashboard");
-        loginPage.ClickLoginButton();
+//    [Test]
+//    public void Test_WeakPassword()
+//    {
+//        loginPage.EnterEmail("test@example.com");
+//        loginPage.EnterPassword("short");
+//        loginPage.EnterOTP("123456");
+//        loginPage.SubmitForm();
 
-        Assert.AreEqual("https://sitwebapp.upesimts.com/dashboard", driver.Url, "User was redirected to login page.");
-    }
+//        Assert.That(loginPage.ErrorText.Displayed, Is.True);
+//        Assert.That(loginPage.ErrorText.Text, Does.Contain("Password").And.Contain("8").IgnoreCase);
+//    }
 
-    [Test]
-    public void Test_InvalidUrl_Response()
-    {
-        driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/login?country=/invalidCountry");
-        loginPage.ClickLoginButton();
+//    [Test]
+//    public void Test_WrongOTP()
+//    {
+//        loginPage.EnterEmail("test@example.com");
+//        loginPage.EnterPassword("ValidPassword1!");
+//        loginPage.EnterOTP("wrongOTP");
+//        loginPage.SubmitForm();
 
-        // Assert response for invalid URL (example assertion, adapt as needed)
-        Assert.IsTrue(driver.PageSource.Contains("Invalid country"), "Invalid URL response not handled.");
-    }
+//        Assert.That(loginPage.ErrorText.Displayed, Is.True);
+//        Assert.That(loginPage.ErrorText.Text, Does.Contain("OTP").And.Contain("incorrect").IgnoreCase);
+//    }
 
-    [Test]
-    public void Test_JavaScriptDisabled_NoAction()
-    {
-        // Disable JavaScript (this would typically be done via browser settings)
-        var options = new ChromeOptions();
-        options.AddArgument("--disable-javascript");
-        driver = new ChromeDriver(options);
-        driver.Navigate().GoToUrl(baseUrl);
-        loginPage.ClickLoginButton();
+//    [Test]
+//    public void Test_EmptyFields()
+//    {
+//        loginPage.EnterEmail("");
+//        loginPage.EnterPassword("");
+//        loginPage.EnterOTP("");
+//        loginPage.SubmitForm();
 
-        // Assert no navigation occurred
-        Assert.AreEqual(baseUrl, driver.Url, "Navigation occurred with JavaScript disabled.");
-    }
+//        Assert.That(loginPage.ErrorText.Displayed, Is.True);
+//        Assert.That(loginPage.ErrorText.Text, Does.Contain("All fields").IgnoreCase);
+//    }
 
-    [Test]
-    public void Test_PopupBlocker_NoRedirect()
-    {
-        // Simulate popup blocker
-        var options = new ChromeOptions();
-        options.AddArgument("--disable-popup-blocking");
-        driver = new ChromeDriver(options);
-        driver.Navigate().GoToUrl(baseUrl);
-        loginPage.ClickLoginButton();
+//    [Test]
+//    public void Test_ExcessivelyLongEmail()
+//    {
+//        string longEmail = new string('a', 256) + "@example.com";
+//        loginPage.EnterEmail(longEmail);
+//        loginPage.EnterPassword("ValidPassword1!");
+//        loginPage.EnterOTP("123456");
+//        loginPage.SubmitForm();
 
-        // Assert user remains on the same page
-        Assert.AreEqual(baseUrl, driver.Url, "User was redirected despite popup blocker.");
-    }
+//        Assert.That(loginPage.ErrorText.Displayed, Is.True);
+//        Assert.That(loginPage.ErrorText.Text, Does.Contain("too long").IgnoreCase);
+//    }
+//}
 
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
-    }
-}

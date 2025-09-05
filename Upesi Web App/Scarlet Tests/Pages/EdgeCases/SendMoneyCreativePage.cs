@@ -1,22 +1,24 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.PageObjects;
+using OpenQA.Selenium.Interactions;
 
 public class SendMoneyCreativePage
 {
-    private IWebDriver driver;
+    private readonly IWebDriver driver;
+
+    // Locator for Send Money link — adjust if the selector changes
+    private readonly By sendMoneyLinkLocator = By.CssSelector("a[href='/money-transfer']");
 
     public SendMoneyCreativePage(IWebDriver driver)
     {
         this.driver = driver;
-        PageFactory.InitElements(driver, this);
     }
 
-    [FindsBy(How = How.CssSelector, Using = "a[href='/money-transfer']")]
-    public IWebElement SendMoneyLink { get; set; }
+    // Property to return the element when needed
+    public IWebElement SendMoneyLink => driver.FindElement(sendMoneyLinkLocator);
 
     public void HoverOverSendMoneyLink()
     {
-        var actions = new OpenQA.Selenium.Interactions.Actions(driver);
+        var actions = new Actions(driver);
         actions.MoveToElement(SendMoneyLink).Perform();
     }
 

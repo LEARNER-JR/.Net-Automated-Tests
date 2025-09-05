@@ -1,38 +1,68 @@
 ﻿using NUnit.Framework;
-using Scarlet_Tests.Pages.Negative;
-using Scarlet_Tests.Tests;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 [TestFixture]
-public class AddBeneficiaryNegativeTest
+public class AddBeneficiaryNegativeTests
 {
-    private AddBeneficiaryNegativePage _page;
+    private IWebDriver driver;
+    private AddBeneficiaryNegativePage addBeneficiaryPage;
 
     [SetUp]
-    public void TestSetup()
+    public void Setup()
     {
-        driver.Navigate().GoToUrl(baseUrl + "add-beneficiary");
-        _page = new AddBeneficiaryNegativePage(driver);
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/add-beneficiary");
+        addBeneficiaryPage = new AddBeneficiaryNegativePage(driver);
     }
 
     [Test]
-    public void AttemptToAddBeneficiaryWithoutDetails()
+    public void TestClickPlusIconWhenNotLoggedIn()
     {
-        _page.AddBeneficiary("");
-        Assert.That(_page.GetErrorMessage(), Is.EqualTo("Please enter beneficiary details."));
+        addBeneficiaryPage.ClickPlusIcon();
+
+        Assert.That(addBeneficiaryPage.IsErrorMessageDisplayed(),
+            Is.True, "Error message is not displayed when clicking plus icon while not logged in.");
     }
 
     [Test]
-    public void TestInvalidDataEntry()
+    public void TestClickPlusIconDuringLoadingState()
     {
-        _page.AddBeneficiary("!@#$%^&*()");
-        Assert.That(_page.GetErrorMessage(), Is.EqualTo("Invalid name entered."));
+        // Simulate loading state
+        // e.g. ToggleLoadingState();
+
+        addBeneficiaryPage.ClickPlusIcon();
+
+        Assert.That(addBeneficiaryPage.IsFormDisplayed(),
+            Is.False, "Form should not be displayed during loading state.");
     }
 
     [Test]
-    public void SimulateAddingDuplicateBeneficiary()
+    public void TestIncompleteFormSubmission()
     {
-        _page.AddBeneficiary("John Doe");
-        _page.AddBeneficiary("John Doe");
-        Assert.That(_page.GetErrorMessage(), Is.EqualTo("Beneficiary already exists."));
+        addBeneficiaryPage.FillBeneficiaryForm(""); // Leaving the form incomplete
+        addBeneficiaryPage.SubmitForm();
+
+        Assert.That(addBeneficiaryPage.IsErrorMessageDisplayed(),
+            Is.True, "Error message is not displayed for incomplete form submission.");
+    }
+
+    [Test]
+    public void TestMultipleClicksOnPlusIcon()
+    {
+        addBeneficiaryPage.ClickPlusIcon();
+        Assert.That(addBeneficiaryPage.IsFormDisplayed(),
+            Is.True, "Form should be displayed after first click.");
+
+        addBeneficiaryPage.ClickPlusIcon();
+        Assert.That(addBeneficiaryPage.IsFormDisplayed(),
+            Is.True, "Form should still be displayed after second click.");
+        // TODO: Optionally check that only one form instance exists.
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        driver.Quit();
     }
 }

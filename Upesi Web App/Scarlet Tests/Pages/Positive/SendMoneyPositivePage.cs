@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.PageObjects;
 
 public class SendMoneyPositivePage
 {
@@ -8,11 +7,9 @@ public class SendMoneyPositivePage
     public SendMoneyPositivePage(IWebDriver driver)
     {
         _driver = driver;
-        PageFactory.InitElements(driver, this);
     }
 
-    [FindsBy(How = How.CssSelector, Using = "a[href='/money-transfer']")]
-    public IWebElement SendMoneyLink { get; set; }
+    private IWebElement SendMoneyLink => _driver.FindElement(By.CssSelector("a[href='/money-transfer']"));
 
     public void ClickSendMoneyLink()
     {
@@ -32,5 +29,10 @@ public class SendMoneyPositivePage
     public void NavigateToMoneyTransferPage()
     {
         _driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/money-transfer");
+    }
+    public bool IsSendMoneyLinkKeyboardAccessible()
+    {
+        SendMoneyLink.SendKeys(Keys.Tab);
+        return SendMoneyLink.Equals(_driver.SwitchTo().ActiveElement());
     }
 }

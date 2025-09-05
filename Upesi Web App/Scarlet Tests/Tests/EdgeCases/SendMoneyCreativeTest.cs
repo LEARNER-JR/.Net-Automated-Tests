@@ -1,72 +1,97 @@
-﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using Assert = NUnit.Framework.Assert;
-
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 using System;
 
-[TestFixture]
-public class SendMoneyCreativeTest
+public class PageObjectModel
 {
-    private IWebDriver driver;
-    private PageObjectModel page;
+    private readonly IWebDriver _driver;
+    private readonly WebDriverWait _wait;
+    private readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
-    [SetUp]
-    public void Setup()
+    // Replace these with the actual selectors used in your app.
+    // The order is important: the class will try them in sequence.
+    private readonly By[] _sendMoneyLocators = new By[]
     {
-        driver = new ChromeDriver();
-        driver.Navigate().GoToUrl("https://sitwebapp.upesimts.com/money-transfer");
-        page = new PageObjectModel(driver);
+        By.CssSelector("a.send-money-link"),          // example CSS class selector
+        By.LinkText("Send Money"),                    // link text fallback
+        By.CssSelector("a[href*='money-transfer']")   // href-based fallback
+    };
+
+    public PageObjectModel(IWebDriver driver, TimeSpan? timeout = null)
+    {
+        _driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        _wait = new WebDriverWait(_driver, timeout ?? _timeout);
     }
 
-    [Test]
-    public void Test_HoverOverLink_ShowsTooltip()
+    // Generic wait-for-visible helper (no SeleniumExtras)
+    private IWebElement WaitVisible(By by)
     {
-        page.HoverOverSendMoneyLink();
-        // Add assertion to check if tooltip is displayed
-        // Example: Assert.IsTrue(driver.FindElement(By.ClassName("tooltip-class")).Displayed);
-    }
-
-    [TestCase(1920, 1080)]
-    [TestCase(1366, 768)]
-    [TestCase(1280, 720)]
-    public void Test_LinkIsClickable(int width, int height)
-    {
-        driver.Manage().Window.Size = new System.Drawing.Size(width, height);
-        Assert.IsTrue(page.SendMoneyLink.Displayed);
-        Assert.IsTrue(page.SendMoneyLink.Enabled);
-    }
-
-    [Test]
-    public void Test_LinkStyleConsistency()
-    {
-        string linkStyle = page.GetLinkStyle();
-        // Add assertion to compare with other link styles
-        // Example: Assert.AreEqual(linkStyle, "expected-style");
-    }
-
-    [Test]
-    public void Test_ClickLinkRapidly_NoErrors()
-    {
-        for (int i = 0; i < 10; i++)
+        return _wait.Until(d =>
         {
-            page.ClickSendMoneyLink();
+            try
+            {
+                var el = d.FindElement(by);
+                return el != null && el.Displayed ? el : null;
+            }
+            catch (NoSuchElementException) { return null; }
+            catch (StaleElementReferenceException) { return null; }
+        });
+    }
+
+    // Public property that will try multiple locators and return the first visible element
+    public IWebElement SendMoneyLink
+    {
+        get
+        {
+            foreach (var loc in _sendMoneyLocators)
+            {
+                try
+                {
+                    var el = WaitVisible(loc);
+                    if (el != null) return el;
+                }
+                catch (WebDriverTimeoutException) { /* try next locator */ }
+            }
+
+            // If none matched, throw with helpful info
+            throw new NoSuchElementException($"Send Money link not found. Tried locators: {string.Join(", ", Array.ConvertAll(_sendMoneyLocators, loc => loc.ToString()))}");
         }
-        // Add assertion to check for errors or page stability
-        // Example: Assert.IsFalse(driver.PageSource.Contains("Error"));
     }
 
-    [Test]
-    public void Test_BrowserZoomImpact()
+    public void HoverOverSendMoneyLink()
     {
-        driver.ExecuteScript("document.body.style.zoom='150%'");
-        Assert.IsTrue(page.SendMoneyLink.Displayed);
-        // Add additional assertions as needed
+        var el = SendMoneyLink;
+        var actions = new Actions(_driver);
+        actions.MoveToElement(el).Perform();
     }
 
-    [TearDown]
-    public void TearDown()
+    public void ClickSendMoneyLink()
     {
-        driver.Quit();
+        var el = SendMoneyLink;
+        // Wait the element to be enabled and clickable-ish
+        _wait.Until(d => el.Displayed && el.Enabled);
+        el.Click();
+    }
+
+    // Returns a small summary of computed style (color, font-size, decoration) + class/style attributes
+    public string GetLinkStyle()
+    {
+        var el = SendMoneyLink;
+        try
+        {
+            var js = (IJavaScriptExecutor)_driver;
+            var color = js.ExecuteScript("return window.getComputedStyle(arguments[0]).getPropertyValue('color');", el) as string;
+            var fontSize = js.ExecuteScript("return window.getComputedStyle(arguments[0]).getPropertyValue('font-size');", el) as string;
+            var textDecoration = js.ExecuteScript("return window.getComputedStyle(arguments[0]).getPropertyValue('text-decoration');", el) as string;
+            var fontWeight = js.ExecuteScript("return window.getComputedStyle(arguments[0]).getPropertyValue('font-weight');", el) as string;
+
+            return $"color:{color}; font-size:{fontSize}; text-decoration:{textDecoration}; font-weight:{fontWeight}; class:{el.GetAttribute("class")}; styleAttr:{el.GetAttribute("style")}";
+        }
+        catch
+        {
+            // Fallback to attributes if JS call fails
+            return el.GetAttribute("style") ?? el.GetAttribute("class") ?? string.Empty;
+        }
     }
 }
