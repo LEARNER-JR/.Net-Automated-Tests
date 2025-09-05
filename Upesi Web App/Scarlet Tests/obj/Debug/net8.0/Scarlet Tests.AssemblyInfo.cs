@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Scarlet Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6b646cb18bf856d76ee59bfa400dc3ce7f397b8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75c6ebc09ba27d2c1bd20bf86225fb11963ccd52")]
 [assembly: System.Reflection.AssemblyProductAttribute("Scarlet Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Scarlet Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
