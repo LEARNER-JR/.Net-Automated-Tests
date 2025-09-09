@@ -36,7 +36,6 @@ public class UserManagementPage
 
         driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/user-management/system-users");
         wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlContains("user-management/system-users"));
-       // wait.Until(d => d.Url.Contains("user-management/system-users"));
     }
     public void ClickAddNewUserButton()
     {

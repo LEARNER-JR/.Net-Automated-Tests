@@ -69,4 +69,9 @@ public class LoginPositivePage
     {
         return PasswordInput.GetAttribute("placeholder");
     }
+
+    //internal void ClickAddTariffButton()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

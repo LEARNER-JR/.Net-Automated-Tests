@@ -19,6 +19,7 @@ public class Program
         services.AddScoped<LoginPositivePage>();
         services.AddScoped<UserManagementPage>();
         services.AddScoped< UserManagementNegativePage>();
+        services.AddScoped< TariffPositivePage>();
         return services.BuildServiceProvider();
     }
 }
