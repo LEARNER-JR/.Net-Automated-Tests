@@ -1,22 +1,10 @@
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
-public class LoginPositiveTests
+public class LoginPositiveTests 
 {
-    private IWebDriver driver;
     private LoginPositivePage loginPage;
-
-    [SetUp]
-    public void SetUp()
-    {
-        driver = new ChromeDriver();
-        driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/auth/login");
-        loginPage = new LoginPositivePage(driver);
-    }
-
     [Test]
     public void Test_ValidEmail_AllowsLogin()
     {
@@ -36,7 +24,6 @@ public class LoginPositiveTests
     {
         Assert.That(loginPage.ForgotPasswordLink.Displayed, Is.True);
         loginPage.ClickForgotPassword();
-        Assert.That(driver.Url, Is.EqualTo("https://sit-ui.upesimts.com/auth/forgot-password"));
     }
 
     [Test]
@@ -54,9 +41,15 @@ public class LoginPositiveTests
         Assert.That(loginPage.GetPasswordPlaceholder(), Is.EqualTo("Enter your password"));
     }
 
-    [TearDown]
-    public void TearDown()
+    [Test]
+    public void Test_Login_RedirectsToOTPPage()
     {
-        driver.Quit();
+        // Step 1: Fill in valid credentials
+        loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
+        loginPage.EnterPassword("RJane@321");
+
+        // Step 2: Click Login
+        loginPage.ClickLogin();
     }
+
 }

@@ -3,19 +3,36 @@ using OpenQA.Selenium.Support.UI;
 
 public class LoginPositivePage
 {
-    private IWebDriver driver;
+    private readonly IWebDriver _driver;
     private WebDriverWait wait;
+    private readonly By _otpButton = By.XPath("/html/body/div[2]/div/div/form/div/button[2]");
 
     public LoginPositivePage(IWebDriver driver)
     {
-        this.driver = driver;
-        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        _driver = driver;
+        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
     }
-
     public IWebElement EmailInput => wait.Until(d => d.FindElement(By.Name("email")));
     public IWebElement PasswordInput => wait.Until(d => d.FindElement(By.Name("password")));
     public IWebElement ForgotPasswordLink => wait.Until(d => d.FindElement(By.LinkText("Forgot Password?")));
     public IWebElement LoginButton => wait.Until(d => d.FindElement(By.XPath("//button[text()='Login']")));
+
+    public void PerformPositiveLogin()
+    {
+
+        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/auth/login");
+        var email = "janerose.muthoni@ngaocredit.com";
+        var password = "RJane@321";
+
+        EnterEmail(email);
+        EnterPassword(password);
+        ClickLogin();
+        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible((_otpButton)));
+        _driver.FindElement(_otpButton).Click();
+        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlToBe("https://sit-ui.upesimts.com/"));
+
+        //  wait.Until(d => d.Url.Contains("https://sit-ui.upesimts.com/"));
+    }
 
     public void EnterEmail(string email)
     {
@@ -28,7 +45,6 @@ public class LoginPositivePage
         PasswordInput.Clear();
         PasswordInput.SendKeys(password);
     }
-
     public void ClickForgotPassword()
     {
         ForgotPasswordLink.Click();

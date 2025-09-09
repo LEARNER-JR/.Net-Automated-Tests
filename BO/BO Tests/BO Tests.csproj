@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.10.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.10.3" />
@@ -21,13 +23,6 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Collections.Immutable" Version="9.0.8" />
     <PackageReference Include="xunit.extensibility.execution" Version="2.9.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\EdgeCases\" />
-    <Folder Include="Pages\Negative\" />
-    <Folder Include="Tests\EdgeCases\" />
-    <Folder Include="Tests\Negative\" />
   </ItemGroup>
 
 </Project>
