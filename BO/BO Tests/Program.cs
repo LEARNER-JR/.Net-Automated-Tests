@@ -16,10 +16,18 @@ public class Program
         });
 
         /// add the pages
+        /// user management/logins
         services.AddScoped<LoginPositivePage>();
         services.AddScoped<UserManagementPage>();
         services.AddScoped< UserManagementNegativePage>();
+        //tariffs
         services.AddScoped< TariffPositivePage>();
+        services.AddScoped< TariffNegativePage>();
+        //taxes
+        services.AddScoped< TaxesPositivePage>();
+        services.AddScoped<TaxesNegativePage>();
+        //exchange rates
+        services.AddScoped<ExRatesNegativePage>();
         return services.BuildServiceProvider();
     }
 }

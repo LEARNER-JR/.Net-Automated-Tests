@@ -22,7 +22,7 @@ public class LoginPositivePage
 
         _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/auth/login");
         var email = "janerose.muthoni@ngaocredit.com";
-        var password = "RJane@321";
+        var password = "RJane@3210";
 
         EnterEmail(email);
         EnterPassword(password);

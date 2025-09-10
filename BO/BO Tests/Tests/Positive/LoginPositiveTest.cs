@@ -15,8 +15,8 @@ public class LoginPositiveTests
     [Test]
     public void Test_ValidPassword_AllowsLogin()
     {
-        loginPage.EnterPassword("RJane@321");
-        Assert.That(loginPage.PasswordInput.GetAttribute("value"), Is.EqualTo("RJane@321"));
+        loginPage.EnterPassword("RJane@3210");
+        Assert.That(loginPage.PasswordInput.GetAttribute("value"), Is.EqualTo("RJane@3210"));
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class LoginPositiveTests
     public void Test_LoginButton_Enabled_WhenFieldsAreFilled()
     {
         loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
-        loginPage.EnterPassword("RJane@321");
+        loginPage.EnterPassword("RJane@3210");
         Assert.That(loginPage.IsLoginButtonEnabled(), Is.True);
     }
 
@@ -46,7 +46,7 @@ public class LoginPositiveTests
     {
         // Step 1: Fill in valid credentials
         loginPage.EnterEmail("janerose.muthoni@ngaocredit.com");
-        loginPage.EnterPassword("RJane@321");
+        loginPage.EnterPassword("RJane@3210");
 
         // Step 2: Click Login
         loginPage.ClickLogin();
