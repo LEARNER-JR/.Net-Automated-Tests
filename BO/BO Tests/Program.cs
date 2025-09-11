@@ -20,14 +20,23 @@ public class Program
         services.AddScoped<LoginPositivePage>();
         services.AddScoped<UserManagementPage>();
         services.AddScoped< UserManagementNegativePage>();
+
         //tariffs
         services.AddScoped< TariffPositivePage>();
         services.AddScoped< TariffNegativePage>();
+        //services.AddScoped< TariffCreativePage>();
+
         //taxes
         services.AddScoped< TaxesPositivePage>();
         services.AddScoped<TaxesNegativePage>();
+        services.AddScoped<TaxesCreativePage>();
+
         //exchange rates
         services.AddScoped<ExRatesNegativePage>();
+
+        //add new user
+        services.AddScoped<AddUserPositivePage>();
         return services.BuildServiceProvider();
+
     }
 }

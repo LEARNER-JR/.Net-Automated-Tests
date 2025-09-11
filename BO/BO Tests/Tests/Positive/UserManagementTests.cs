@@ -1,4 +1,6 @@
-﻿using BO_Tests.Tests;
+﻿//System Users
+
+using BO_Tests.Tests;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
@@ -34,7 +36,7 @@ public class UserManagementTests : BaseTest
         _userManagementPage.FillPhoneNumber("+254712345678");
         _userManagementPage.FillDateOfBirth("08/09/2007");
         _userManagementPage.SelectGender("Male");
-        _userManagementPage.FillCompany("Example Company");
+        _userManagementPage.FillCompany("EZREMIT");
         _userManagementPage.SubmitForm();
     }
 

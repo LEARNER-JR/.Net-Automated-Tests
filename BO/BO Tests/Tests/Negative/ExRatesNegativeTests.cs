@@ -1,14 +1,12 @@
-﻿using BO_Tests.Tests;
-using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+﻿using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
 using Microsoft.Extensions.DependencyInjection;
+using BO_Tests.Tests;
 
 [TestFixture]
 public class ExRatesNegativeTests : BaseTest
 {
-    private ExRatesNegativePage _exchangeRatePage;
+        private ExRatesNegativePage _exchangeRatePage;
     private LoginPositivePage _loginPage;
 
     [SetUp]
@@ -24,61 +22,79 @@ public class ExRatesNegativeTests : BaseTest
     }
 
     [Test]
-    public void TestSubmitWithoutSelectingCountry()
+    public void Test_EmptyFromCurrency()
     {
-        _exchangeRatePage.EnterFromCurrency("USD");
-        _exchangeRatePage.EnterToCurrency("EUR");
-        _exchangeRatePage.EnterRate("1.1");
-        _exchangeRatePage.ClickAddExchangeRate();
+        _exchangeRatePage.SetToCurrency("USD");
+        _exchangeRatePage.SetToDate("09/10/2025");
+        _exchangeRatePage.SetOperatingCountry("KENYA");
+        _exchangeRatePage.SetExchangeRate("1.5");
+        _exchangeRatePage.ClickSubmit();
 
-        Assert.That(_exchangeRatePage.GetErrorMessage(), Does.Contain("Please select a country."));
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
     }
 
     [Test]
-    public void TestNonNumericTaxPercentage()
+    public void Test_EmptyToCurrency()
     {
-        _exchangeRatePage.EnterFromCurrency("USD");
-        _exchangeRatePage.EnterToCurrency("EUR");
-        _exchangeRatePage.EnterOperatingCountry("KENYA");
-        _exchangeRatePage.EnterRate("abc");
-        _exchangeRatePage.ClickAddExchangeRate();
+        _exchangeRatePage.SetFromCurrency("USD");
+        _exchangeRatePage.SetToDate("09/10/2025");
+        _exchangeRatePage.SetOperatingCountry("KENYA");
+        _exchangeRatePage.SetExchangeRate("1.5");
+        _exchangeRatePage.ClickSubmit();
 
-        Assert.That(_exchangeRatePage.GetErrorMessage(), Does.Contain("Enter a valid number."));
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
     }
 
     [Test]
-    public void TestServiceTypeNotSelected()
+    public void Test_InvalidDateFormat()
     {
-        _exchangeRatePage.EnterFromCurrency("USD");
-        _exchangeRatePage.EnterToCurrency("EUR");
-        _exchangeRatePage.EnterOperatingCountry("KENYA");
-        _exchangeRatePage.ClickAddExchangeRate();
+        _exchangeRatePage.SetFromCurrency("USD");
+        _exchangeRatePage.SetToCurrency("EUR");
+        _exchangeRatePage.SetToDate("invalid-date");
+        _exchangeRatePage.SetOperatingCountry("KENYA");
+        _exchangeRatePage.SetExchangeRate("1.5");
+        _exchangeRatePage.ClickSubmit();
 
-        Assert.That(_exchangeRatePage.GetErrorMessage(), Does.Contain("Please select a service type."));
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
     }
 
     [Test]
-    public void TestInvalidTaxPercentage()
+    public void Test_EmptyOperatingCountry()
     {
-        _exchangeRatePage.EnterFromCurrency("USD");
-        _exchangeRatePage.EnterToCurrency("EUR");
-        _exchangeRatePage.EnterOperatingCountry("KENYA");
-        _exchangeRatePage.EnterRate("-1");
-        _exchangeRatePage.ClickAddExchangeRate();
+        _exchangeRatePage.SetFromCurrency("USD");
+        _exchangeRatePage.SetToCurrency("EUR");
+        _exchangeRatePage.SetToDate("09/10/2025");
+        _exchangeRatePage.SetExchangeRate("1.5");
+        _exchangeRatePage.ClickSubmit();
 
-        Assert.That(_exchangeRatePage.GetErrorMessage(), Does.Contain("Tax percentage must be between 0 and 100."));
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
     }
 
     [Test]
-    public void TestAddTaxWithoutFillingFields()
+    public void Test_EmptyExchangeRate()
     {
-        _exchangeRatePage.ClickAddExchangeRate();
-        //Assert.That(_driver.Url, Does.Not.Contain("success")); // Adjust based on actual behavior
+        _exchangeRatePage.SetFromCurrency("USD");
+        _exchangeRatePage.SetToCurrency("EUR");
+        _exchangeRatePage.SetToDate("09/10/2025");
+        _exchangeRatePage.SetOperatingCountry("KENYA");
+        _exchangeRatePage.ClickSubmit();
+
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
+    }
+
+    [Test]
+    public void Test_ActivateNotificationWithEmptyFields()
+    {
+        _exchangeRatePage.ActivateNotificationCheckbox.Click();
+        _exchangeRatePage.ClickSubmit();
+
+        Assert.That(_exchangeRatePage.IsErrorMessageDisplayed(), Is.True);
     }
 
     //[TearDown]
     //public void TearDown()
     //{
-    //    _driver.Quit();
+    //    driver.Quit();
     //}
 }
+

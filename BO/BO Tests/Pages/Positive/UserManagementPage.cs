@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿//System Users
+
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 public class UserManagementPage

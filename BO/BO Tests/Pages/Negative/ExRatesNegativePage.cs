@@ -3,60 +3,75 @@ using OpenQA.Selenium.Support.UI;
 
 public class ExRatesNegativePage
 {
-    private readonly IWebDriver _driver;
-    private readonly WebDriverWait _wait;
+    private readonly IWebDriver driver;
+    private readonly WebDriverWait wait;
 
     public ExRatesNegativePage(IWebDriver driver)
     {
-        _driver = driver;
-        _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        this.driver = driver;
+        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
     }
 
-    public IWebElement FromCurrencyInput => _wait.Until(d => d.FindElement(By.Id("react-select-5-input")));
-    public IWebElement ToCurrencyInput => _wait.Until(d => d.FindElement(By.Id("react-select-6-input")));
-    public IWebElement OperatingCountryInput => _wait.Until(d => d.FindElement(By.Id("react-select-7-input")));
-    public IWebElement RateInput => _wait.Until(d => d.FindElement(By.Name("rate")));
-    public IWebElement AddExchangeRateButton => _wait.Until(d => d.FindElement(By.XPath("//button[text()='Add Exchange Rate']")));
-    public IWebElement NotificationCheckbox => _wait.Until(d => d.FindElement(By.ClassName("rizzui-checkbox-input")));
-    public IWebElement ErrorMessage => _wait.Until(d => d.FindElement(By.CssSelector(".error-message-selector"))); // Update with actual error message selector
+    public IWebElement FromCurrencyInput => wait.Until(d => d.FindElement(By.Id("react-select-5-input")));
+    public IWebElement ToCurrencyInput => wait.Until(d => d.FindElement(By.Id("react-select-6-input")));
+    public IWebElement ToDateInput => wait.Until(d => d.FindElement(By.CssSelector("input[placeholder='Select Date']")));
+    public IWebElement OperatingCountryInput => wait.Until(d => d.FindElement(By.Id("react-select-7-input")));
+    public IWebElement ExchangeRateInput => wait.Until(d => d.FindElement(By.Name("rate")));
+    public IWebElement ActivateNotificationCheckbox => wait.Until(d => d.FindElement(By.CssSelector("input[type='checkbox']")));
+    public IWebElement SubmitButton => wait.Until(d => d.FindElement(By.XPath("//button[contains(text(), 'Add Exchange Rate')]")));
+    public IWebElement CancelButton => wait.Until(d => d.FindElement(By.XPath("//button[contains(text(), 'Cancel')]")));
 
-    public void EnterFromCurrency(string currency)
+    public void SetFromCurrency(string currency)
     {
         FromCurrencyInput.SendKeys(currency);
+        FromCurrencyInput.SendKeys(Keys.Enter);
     }
 
-    public void EnterToCurrency(string currency)
+    public void SetToCurrency(string currency)
     {
         ToCurrencyInput.SendKeys(currency);
+        ToCurrencyInput.SendKeys(Keys.Enter);
     }
 
-    public void EnterOperatingCountry(string country)
+    public void SetToDate(string date)
+    {
+        ToDateInput.Clear();
+        ToDateInput.SendKeys(date);
+    }
+
+    public void SetOperatingCountry(string country)
     {
         OperatingCountryInput.SendKeys(country);
+        OperatingCountryInput.SendKeys(Keys.Enter);
     }
 
-    public void EnterRate(string rate)
+    public void SetExchangeRate(string rate)
     {
-        RateInput.Clear();
-        RateInput.SendKeys(rate);
+        ExchangeRateInput.Clear();
+        ExchangeRateInput.SendKeys(rate);
     }
 
-    public void ClickAddExchangeRate()
+    public void ClickSubmit()
     {
-        AddExchangeRateButton.Click();
+        SubmitButton.Click();
     }
 
-    public string GetErrorMessage()
+    public void ClickCancel()
     {
-        return ErrorMessage.Text;
+        CancelButton.Click();
     }
 
-    internal void NavigateToExchangeRatePage()
+    public bool IsErrorMessageDisplayed()
+    {
+        return driver.FindElements(By.ClassName("error-message")).Count > 0; // Adjust selector based on actual error message implementation
+    }
+
+    internal void WaitForPageLoad()
     {
         throw new NotImplementedException();
     }
 
-    internal void WaitForPageLoad()
+    internal void NavigateToExchangeRatePage()
     {
         throw new NotImplementedException();
     }
