@@ -38,7 +38,7 @@ public class AddUserPositiveTest : BaseTest
         _addUserPositivePage.SelectUserType("Individual");
         _addUserPositivePage.EnterFirstName("John");
         _addUserPositivePage.EnterMiddleName("A.");
-        _addUserPositivePage.EnterLastName("Doe");
+        _addUserPositivePage.EnterLastName("Dot");
         _addUserPositivePage.EnterEmail("john.doe@example.com");
         _addUserPositivePage.EnterPhoneNumber("1 (702) 123-4567");
         _addUserPositivePage.SelectDateOfBirth("01/01/2000");

@@ -36,6 +36,8 @@ public class Program
 
         //add new user
         services.AddScoped<AddUserPositivePage>();
+        services.AddScoped<AddUserNegativePage>();
+
         return services.BuildServiceProvider();
 
     }

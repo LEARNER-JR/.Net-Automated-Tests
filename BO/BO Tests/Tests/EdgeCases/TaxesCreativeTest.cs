@@ -55,7 +55,7 @@ public class TaxesCreativeTests : BaseTest
     {
         _taxCreativePage.SelectCountry("USA");
         _taxCreativePage.SelectServiceType("Service A");
-        driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/taxes");
+        //driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/taxes");
         Assert.That(_taxCreativePage.CountryInput.GetAttribute("value"), Is.EqualTo("USA"));
         Assert.That(_taxCreativePage.ServiceTypeInput.GetAttribute("value"), Is.EqualTo("Service A"));
     }
@@ -79,9 +79,9 @@ public class TaxesCreativeTests : BaseTest
         Assert.That(_taxCreativePage.AddTaxButton.Displayed, Is.True);
     }
 
-    [TearDown]
-    public void TearDown()
-    {
-        driver.Quit();
-    }
+    //[TearDown]
+    //public void TearDown()
+    //{
+    //    driver.Quit();
+    //}
 }
