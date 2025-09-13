@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using Microsoft.Extensions.DependencyInjection;
 using Assert = NUnit.Framework.Assert;
 using BO_Tests.Tests;
+using Docker.DotNet.Models;
 
 [TestFixture]
 public class AddUserPositiveTest : BaseTest
@@ -29,7 +30,7 @@ public class AddUserPositiveTest : BaseTest
     public void VerifyUserCanSelectIndividual()
     {
         _addUserPositivePage.SelectUserType("Individual");
-        Assert.That(driver.FindElement(By.XPath("//span[text()='Individual']")).Text, Is.EqualTo("Individual"));
+        Assert.That(Driver.FindElement(By.XPath("//span[text()='Individual']")).Text, Is.EqualTo("Individual"));
     }
 
     [Test]
@@ -56,7 +57,7 @@ public class AddUserPositiveTest : BaseTest
         _addUserPositivePage.EnterLastName("Doe");
         _addUserPositivePage.EnterEmail("john.doe@example.com");
         _addUserPositivePage.EnterPhoneNumber("1 (702) 123-4567");
-        Assert.That(driver.FindElement(By.XPath("//input[@type='tel']")).GetAttribute("value"), Is.EqualTo("+254"));
+        Assert.That(Driver.FindElement(By.XPath("//input[@type='tel']")).GetAttribute("value"), Is.EqualTo("+254"));
     }
 
     [Test]
@@ -67,7 +68,7 @@ public class AddUserPositiveTest : BaseTest
         _addUserPositivePage.EnterLastName("Doe");
         _addUserPositivePage.EnterEmail("john.doe@example.com");
         _addUserPositivePage.SelectDateOfBirth("01/01/2000");
-        Assert.That(driver.FindElement(By.XPath("//input[@placeholder='Select Date']")).GetAttribute("value"), Is.EqualTo("01/01/2000"));
+        Assert.That(Driver.FindElement(By.XPath("//input[@placeholder='Select Date']")).GetAttribute("value"), Is.EqualTo("01/01/2000"));
     }
 
     [Test]
@@ -78,7 +79,7 @@ public class AddUserPositiveTest : BaseTest
         _addUserPositivePage.EnterLastName("Doe");
         _addUserPositivePage.EnterEmail("john.doe@example.com");
         _addUserPositivePage.SelectGender("Male");
-        Assert.That(driver.FindElement(By.Name("gender")).GetAttribute("value"), Is.EqualTo("Male"));
+        Assert.That(Driver.FindElement(By.Name("gender")).GetAttribute("value"), Is.EqualTo("Male"));
     }
 
     [Test]

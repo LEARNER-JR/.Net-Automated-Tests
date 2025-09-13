@@ -1,16 +1,17 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-public class PromotionPage
+public class PromotionPositivePage
 {
     private readonly IWebDriver _driver;
     private readonly WebDriverWait _wait;
 
-    public PromotionPage(IWebDriver driver)
+    public PromotionPositivePage(IWebDriver driver)
     {
         _driver = driver;
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
     }
+    public string BaseUrl => "https://sit-ui.upesimts.com/promotions";
 
     public IWebElement PromotionNameInput => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Name("promotionName")));
     public IWebElement PromotionTypeDropdown => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("headlessui-listbox-button-:r4n:")));
@@ -21,12 +22,25 @@ public class PromotionPage
     public IWebElement SingleUseCheckbox => _driver.FindElement(By.Name("singleUse"));
     public IWebElement AddPromotionButton => _driver.FindElement(By.Id("addPromotionButton"));
 
+    public void NavigateToPromotionPage()
+    {
+        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/promotions");
+        _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlContains("promotions"));
+    }
+    public void WaitForPageLoad()
+    {
+        _wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
+    }
+    public void ClickCreatePromotion()
+    {
+        var createPromotionButton = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("/html/body/main/div/div/div[1]/div/div/a[2]")));
+        createPromotionButton.Click();
+    }
     public void EnterPromotionName(string name)
     {
         PromotionNameInput.Clear();
         PromotionNameInput.SendKeys(name);
     }
-
     public void SelectPromotionType(string type)
     {
         PromotionTypeDropdown.Click();

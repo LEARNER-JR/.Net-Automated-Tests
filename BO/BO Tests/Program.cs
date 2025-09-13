@@ -38,6 +38,10 @@ public class Program
         services.AddScoped<AddUserPositivePage>();
         services.AddScoped<AddUserNegativePage>();
 
+        //promotions
+        services.AddScoped<PromotionPositivePage>();
+        services.AddScoped<PromotionNegativePage>();
+
         return services.BuildServiceProvider();
 
     }

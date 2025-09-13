@@ -1,23 +1,26 @@
 ﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using BO_Tests.Tests;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
 public class PromotionTests : BaseTest
 {
-    private IWebDriver _driver;
-    private PromotionPage _promotionPage;
+    private LoginPositivePage _loginPositivePage;
+    private PromotionPositivePage _promotionPage;
 
     [SetUp]
     public void Setup()
     {
-        _driver = new ChromeDriver();
-        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/promotions/create");
-        _promotionPage = new PromotionPage(_driver);
+        base.SetUp();
+
+        _loginPositivePage = ServiceProvider.GetRequiredService<LoginPositivePage>();
+        _loginPositivePage.PerformPositiveLogin();
+        _promotionPage = ServiceProvider.GetRequiredService<PromotionPositivePage>();
+
+        _promotionPage.NavigateToPromotionPage();
+        _promotionPage.ClickCreatePromotion(); // Open the create promotion form
+        _promotionPage.WaitForPageLoad();
     }
 
     [Test]
@@ -62,7 +65,7 @@ public class PromotionTests : BaseTest
     [Test]
     public void Test_AddPromotionButtonEnabled()
     {
-        _promotionPage.EnterPromotionName("Summer Sale");
+        _promotionPage.EnterPromotionName("Summersale");
         _promotionPage.SelectPromotionType("Customer");
         _promotionPage.EnterMinimumTransaction("100");
         _promotionPage.EnterDiscountAmount("10");
@@ -70,11 +73,5 @@ public class PromotionTests : BaseTest
         _promotionPage.SelectEndDate("2023-10-31");
         _promotionPage.ToggleSingleUseCheckbox();
         Assert.That(_promotionPage.IsAddPromotionButtonEnabled(), Is.True);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _driver.Quit();
     }
 }

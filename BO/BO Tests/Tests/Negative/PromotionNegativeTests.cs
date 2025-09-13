@@ -1,22 +1,26 @@
 ﻿using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using BO_Tests.Tests;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
+
 [TestFixture]
 public class PromotionNegativeTests : BaseTest
 {
-    private IWebDriver driver;
+    private LoginPositivePage _loginPage;
     private PromotionNegativePage promotionPage;
 
     [SetUp]
     public void Setup()
     {
-        driver = new ChromeDriver();
-        driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/promotions/create");
-        promotionPage = new PromotionNegativePage(driver);
+        base.SetUp();
+
+        _loginPage = ServiceProvider.GetRequiredService<LoginPositivePage>();
+        _loginPage.PerformPositiveLogin();
+        promotionPage = ServiceProvider.GetRequiredService<PromotionNegativePage>();
+
+        promotionPage.NavigateToPromotionPage();
+        promotionPage.WaitForPageLoad();
+        promotionPage.ClickCreatePromotion(); // Open the create promotion form
     }
 
     [Test]
