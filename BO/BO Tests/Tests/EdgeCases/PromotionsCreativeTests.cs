@@ -1,19 +1,27 @@
-﻿using NUnit.Framework;
+﻿using BO_Tests.Tests;
+using Docker.DotNet.Models;
+using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using Assert = NUnit.Framework.Assert;
 
 [TestFixture]
-public class PromotionTests
+public class PromotionCreativeTests : BaseTest
 {
-    private IWebDriver _driver;
-    private PromotionPage _promotionPage;
+    private LoginPositivePage _loginPage;
+    private PromotionCreativePage _promotionPage;
 
     [SetUp]
     public void Setup()
     {
-        _driver = new ChromeDriver();
-        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/promotions/create");
-        _promotionPage = new PromotionPage(_driver);
+        base.SetUp();
+        _loginPage = ServiceProvider.GetRequiredService<LoginPositivePage>();
+        _loginPage.PerformPositiveLogin();
+
+        _promotionPage = ServiceProvider.GetRequiredService<PromotionCreativePage>();
+        _promotionPage.NavigateToPromotionsPage();
+        _promotionPage.ClickAddPromotionButton(); // Open the form
+        _promotionPage.WaitForPageLoad();         // Wait for the form to load
     }
 
     [Test]
@@ -30,7 +38,9 @@ public class PromotionTests
             _promotionPage.SubmitForm();
         }
 
-        // Add assertions to verify the expected outcome after rapid submissions
+        // Example: Assert that 10 promotions appear in the list
+        Assert.That(_promotionPage.GetPromotionCount(), Is.GreaterThanOrEqualTo(10),
+            "Expected at least 10 promotions after rapid submissions.");
     }
 
     [Test]
@@ -38,10 +48,15 @@ public class PromotionTests
     {
         string specialChars = "!@#$%^&*()_+";
         _promotionPage.FillPromotionName(specialChars);
-        Assert.AreEqual(specialChars, _promotionPage.PromotionNameInput.GetAttribute("value"));
+
+        Assert.That(_promotionPage.PromotionNameInput.GetAttribute("value"), Is.EqualTo(specialChars),
+            "Promotion name input did not retain special characters.");
+
         _promotionPage.SubmitForm();
 
-        // Add assertions to verify the expected outcome
+        // Example: Verify validation/error message
+        Assert.That(_promotionPage.IsValidationMessageDisplayed(), Is.True,
+            "Expected validation message for special characters.");
     }
 
     [Test]
@@ -53,7 +68,10 @@ public class PromotionTests
         _promotionPage.SelectChannel("Select Channel");
         _promotionPage.SelectDiscountType("Select discount type");
 
-        // Add assertions to verify the expected outcome
+        // Example: Assert that selected values are displayed correctly
+        Assert.That(_promotionPage.GetSelectedPromotionType(), Is.EqualTo("Customer"));
+        Assert.That(_promotionPage.GetSelectedCondition(), Is.EqualTo("None"));
+        Assert.That(_promotionPage.GetSelectedPlatform(), Is.EqualTo("All"));
     }
 
     [Test]
@@ -61,21 +79,27 @@ public class PromotionTests
     {
         _promotionPage.FillPromotionName("ValidPromoCode");
         _promotionPage.PromotionNameInput.Clear();
-        Assert.AreEqual("", _promotionPage.PromotionNameInput.GetAttribute("value"));
 
-        // Add assertions to verify the expected outcome
+        Assert.That(_promotionPage.PromotionNameInput.GetAttribute("value"), Is.Empty,
+            "Promotion name input should be cleared.");
+
+        // Example: Assert that submission is disabled or blocked
+        Assert.That(_promotionPage.IsSubmitButtonEnabled(), Is.False,
+            "Submit button should be disabled when promotion name is empty.");
     }
 
     [Test]
     public void KeyboardNavigationAccessibility()
     {
         _promotionPage.PromotionNameInput.SendKeys(Keys.Tab);
-        Assert.IsTrue(_promotionPage.PromotionTypeDropdown.Displayed);
+        Assert.That(_promotionPage.PromotionTypeDropdown.Displayed, Is.True,
+            "Promotion type dropdown should be visible after tabbing.");
 
         _promotionPage.PromotionTypeDropdown.SendKeys(Keys.Tab);
-        Assert.IsTrue(_promotionPage.ConditionDropdown.Displayed);
+        Assert.That(_promotionPage.ConditionDropdown.Displayed, Is.True,
+            "Condition dropdown should be visible after tabbing.");
 
-        // Continue to navigate through all fields and assert visibility
+        // Extend with additional fields and asserts
     }
 
     [Test]
@@ -90,12 +114,14 @@ public class PromotionTests
         _promotionPage.SelectDiscountType("Select discount type");
         _promotionPage.SubmitForm();
 
-        // Add feedback assertions based on expected usability outcomes
+        // Example: Verify success notification or confirmation
+        Assert.That(_promotionPage.IsSuccessMessageDisplayed(), Is.True,
+            "Expected success message after submitting a valid promotion form.");
     }
 
     [TearDown]
     public void TearDown()
     {
-        _driver.Quit();
+        Driver.Quit();
     }
 }

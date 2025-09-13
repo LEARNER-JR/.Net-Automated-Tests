@@ -1,12 +1,12 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-public class PromotionPage
+public class PromotionCreativePage
 {
     private readonly IWebDriver _driver;
     private readonly WebDriverWait _wait;
 
-    public PromotionPage(IWebDriver driver)
+    public PromotionCreativePage(IWebDriver driver)
     {
         _driver = driver;
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -59,5 +59,25 @@ public class PromotionPage
     public void SubmitForm()
     {
         SubmitButton.Click();
+    }
+
+    public void NavigateToPromotionsPage()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ClickAddPromotionButton()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void WaitForPageLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal bool IsValidationMessageDisplayed()
+    {
+        throw new NotImplementedException();
     }
 }

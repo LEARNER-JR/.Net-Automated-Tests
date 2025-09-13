@@ -1,25 +1,33 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using Microsoft.Extensions.DependencyInjection;
+using Assert = NUnit.Framework.Assert;
+using BO_Tests.Tests;
 
 [TestFixture]
-public class CreateTransactionTests
+public class TransactionPositiveTests : BaseTest
 {
-    private IWebDriver _driver;
+    private LoginPositivePage _loginPage;
     private CreateTransactionPage _createTransactionPage;
 
     [SetUp]
     public void Setup()
     {
-        _driver = new ChromeDriver();
-        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/transactions/create#senderDetails");
-        _createTransactionPage = new CreateTransactionPage(_driver);
+        base.SetUp();
+        _loginPage = ServiceProvider.GetRequiredService<LoginPositivePage>();
+        _loginPage.PerformPositiveLogin();
+
+        _createTransactionPage = ServiceProvider.GetRequiredService<CreateTransactionPage>();
+        _createTransactionPage.NavigateToCreateTransactionPage();
+        _createTransactionPage.WaitForPageLoad();
+
     }
 
     [Test]
     public void Test_NavigateToCreateTransactionPage()
     {
-        Assert.IsTrue(_createTransactionPage.IsOnCreateTransactionPage(), "User is not on Create Transaction page.");
+        Assert.That(_createTransactionPage.IsOnCreateTransactionPage(), Is.True,
+            "User is not on Create Transaction page.");
     }
 
     [Test]
@@ -29,7 +37,8 @@ public class CreateTransactionTests
         _createTransactionPage.FillSenderAmount("200");
         _createTransactionPage.FillReceiverAmount("200");
         _createTransactionPage.ClickPreviewTransaction();
-        // Assert that the transaction summary is displayed correctly (add appropriate assertion based on the summary page)
+        // Example placeholder assertion
+        Assert.That(Driver.PageSource, Does.Contain("Transaction Summary"));
     }
 
     [Test]
@@ -38,32 +47,34 @@ public class CreateTransactionTests
         _createTransactionPage.FillSenderAmount("200");
         _createTransactionPage.FillReceiverAmount("200");
         _createTransactionPage.ClickCalculateRate();
-        // Assert that the fees and total amount are updated correctly (add appropriate assertion)
+        // Example placeholder assertion
+        Assert.That(Driver.PageSource, Does.Contain("Fees updated"));
     }
 
     [Test]
     public void Test_SelectCountryDropdown()
     {
-        // Implement the country selection logic and assertions (add appropriate selector and action)
+        _createTransactionPage.SelectCountry("Kenya");
+        Assert.That(_createTransactionPage.GetSelectedCountry(), Is.EqualTo("Kenya"));
     }
 
     [Test]
     public void Test_UploadSupportingDocument()
     {
         _createTransactionPage.UploadSupportingDocument("path/to/document.pdf");
-        // Assert that the document was uploaded successfully (add appropriate assertion)
+        Assert.That(_createTransactionPage.IsDocumentUploaded(), Is.True);
     }
 
     [Test]
     public void Test_NewBeneficiaryCheckbox()
     {
         _createTransactionPage.CheckNewBeneficiaryCheckbox();
-        // Assert that the associated fields are enabled (add appropriate assertion)
+        Assert.That(_createTransactionPage.AreNewBeneficiaryFieldsEnabled(), Is.True);
     }
 
     [TearDown]
     public void TearDown()
     {
-        _driver.Quit();
+        Driver.Quit();
     }
 }

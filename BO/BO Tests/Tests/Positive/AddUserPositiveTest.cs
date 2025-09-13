@@ -97,9 +97,9 @@ public class AddUserPositiveTest : BaseTest
         // Add assertion to check for success message or redirection
     }
 
-    //[TearDown]
-    //public void TearDown()
-    //{
-    //    driver.Quit();
-    //}
+    [TearDown]
+    public void teardown()
+    {
+        Driver.Quit();
+    }
 }
