@@ -11,7 +11,6 @@ public class PromotionCreativePage
         _driver = driver;
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
     }
-
     public IWebElement PromotionNameInput => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Name("promotionName")));
     public IWebElement PromotionTypeDropdown => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("headlessui-listbox-button-:r4n:")));
     public IWebElement ConditionDropdown => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("headlessui-listbox-button-:r4q:")));
@@ -56,28 +55,98 @@ public class PromotionCreativePage
         _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath($"//li[text()='{discountType}']"))).Click();
     }
 
-    public void SubmitForm()
-    {
-        SubmitButton.Click();
-    }
-
     public void NavigateToPromotionsPage()
     {
-        throw new NotImplementedException();
+        _driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/promotions/create");
+        _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlContains("promotions"));
     }
-
     public void ClickAddPromotionButton()
     {
-        throw new NotImplementedException();
+        var addPromotionBtn = _wait.Until(
+            SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(
+                By.XPath("//button[normalize-space()='Add Promotion']")
+            )
+        );
+        addPromotionBtn.Click();
     }
 
     public void WaitForPageLoad()
     {
-        throw new NotImplementedException();
+        _wait.Until(driver =>
+            ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete"
+        );
     }
+
+    //public void WaitForPageLoad()
+    //{
+    //    _wait.Until(driver =>
+    //        ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").ToString() == "complete"
+    //    );
+
+    //    // If jQuery is present, wait for AJAX requests too
+    //    try
+    //    {
+    //        _wait.Until(driver =>
+    //            (bool)((IJavaScriptExecutor)driver).ExecuteScript("return (typeof jQuery === 'undefined') || (jQuery.active === 0)")
+    //        );
+    //    }
+    //    catch (WebDriverTimeoutException)
+    //    {
+    //        // Ignore if no jQuery
+    //    }
+    //}
 
     internal bool IsValidationMessageDisplayed()
     {
         throw new NotImplementedException();
+    }
+    public int GetPromotionCount()
+    {
+        var promos = _driver.FindElements(By.CssSelector("div table tbody tr"));
+        return promos.Count;
+    }
+
+    public string GetSelectedPromotionType()
+    {
+        return PromotionTypeDropdown.Text.Trim();
+    }
+
+    public string GetSelectedCondition()
+    {
+        return ConditionDropdown.Text.Trim();
+    }
+
+    public string GetSelectedPlatform()
+    {
+        return PlatformDropdown.Text.Trim();
+    }
+
+    public bool IsSubmitButtonEnabled()
+    {
+        throw new NotImplementedException();
+    }
+    public bool IsSuccessMessageDisplayed()
+    {
+        try
+        {
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlContains("/promotions"));
+
+            var success = _wait.Until(
+                SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(
+                    By.XPath("//p[contains(text(),'Promotion Created Successfully')]")
+                )
+            );
+
+            return success.Displayed;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
+    }
+
+    public void SubmitForm()
+    {
+        SubmitButton.Click();
     }
 }

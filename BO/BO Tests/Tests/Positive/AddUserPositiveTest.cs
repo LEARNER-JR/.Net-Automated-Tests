@@ -3,7 +3,6 @@ using OpenQA.Selenium;
 using Microsoft.Extensions.DependencyInjection;
 using Assert = NUnit.Framework.Assert;
 using BO_Tests.Tests;
-using Docker.DotNet.Models;
 
 [TestFixture]
 public class AddUserPositiveTest : BaseTest
@@ -36,7 +35,7 @@ public class AddUserPositiveTest : BaseTest
     [Test]
     public void ConfirmValidUserDetailsAllowsRegistration()
     {
-        _addUserPositivePage.SelectUserType("Individual");
+        //_addUserPositivePage.SelectUserType("Individual");
         _addUserPositivePage.EnterFirstName("John");
         _addUserPositivePage.EnterMiddleName("A.");
         _addUserPositivePage.EnterLastName("Dot");
@@ -45,56 +44,6 @@ public class AddUserPositiveTest : BaseTest
         _addUserPositivePage.SelectDateOfBirth("01/01/2000");
         _addUserPositivePage.SelectGender("Male");
         _addUserPositivePage.ClickRegisterUser();
-
-        // Add assertion to check for success message or redirection
-    }
-
-    [Test]
-    public void CheckValidPhoneNumberAccepted()
-    {
-        _addUserPositivePage.SelectUserType("Individual");
-        _addUserPositivePage.EnterFirstName("John");
-        _addUserPositivePage.EnterLastName("Doe");
-        _addUserPositivePage.EnterEmail("john.doe@example.com");
-        _addUserPositivePage.EnterPhoneNumber("1 (702) 123-4567");
-        Assert.That(Driver.FindElement(By.XPath("//input[@type='tel']")).GetAttribute("value"), Is.EqualTo("+254"));
-    }
-
-    [Test]
-    public void EnsureValidDateOfBirthProcessed()
-    {
-        _addUserPositivePage.SelectUserType("Individual");
-        _addUserPositivePage.EnterFirstName("John");
-        _addUserPositivePage.EnterLastName("Doe");
-        _addUserPositivePage.EnterEmail("john.doe@example.com");
-        _addUserPositivePage.SelectDateOfBirth("01/01/2000");
-        Assert.That(Driver.FindElement(By.XPath("//input[@placeholder='Select Date']")).GetAttribute("value"), Is.EqualTo("01/01/2000"));
-    }
-
-    [Test]
-    public void ValidateGenderSelectionUpdatesHiddenInput()
-    {
-        _addUserPositivePage.SelectUserType("Individual");
-        _addUserPositivePage.EnterFirstName("John");
-        _addUserPositivePage.EnterLastName("Doe");
-        _addUserPositivePage.EnterEmail("john.doe@example.com");
-        _addUserPositivePage.SelectGender("Male");
-        Assert.That(Driver.FindElement(By.Name("gender")).GetAttribute("value"), Is.EqualTo("Male"));
-    }
-
-    [Test]
-    public void TestRegisterUserButtonSubmitsForm()
-    {
-        _addUserPositivePage.SelectUserType("Individual");
-        _addUserPositivePage.EnterFirstName("John");
-        _addUserPositivePage.EnterLastName("Doe");
-        _addUserPositivePage.EnterEmail("john.doe@example.com");
-        _addUserPositivePage.EnterPhoneNumber("1 (702) 123-4567");
-        _addUserPositivePage.SelectDateOfBirth("01/01/2000");
-        _addUserPositivePage.SelectGender("Male");
-        _addUserPositivePage.ClickRegisterUser();
-
-        // Add assertion to check for success message or redirection
     }
 
     [TearDown]

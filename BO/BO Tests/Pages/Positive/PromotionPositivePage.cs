@@ -14,7 +14,7 @@ public class PromotionPositivePage
     public string BaseUrl => "https://sit-ui.upesimts.com/promotions";
 
     public IWebElement PromotionNameInput => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Name("promotionName")));
-    public IWebElement PromotionTypeDropdown => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("headlessui-listbox-button-:r4n:")));
+    public IWebElement PromotionTypeDropdown => _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("/html/body/main/div/div/form/div[2]/div/div[2]/div[2]/div/button")));
     public IWebElement MinimumTransactionInput => _driver.FindElement(By.Name("minimumTransaction"));
     public IWebElement DiscountAmountInput => _driver.FindElement(By.Name("discountAmount"));
     public IWebElement StartDateInput => _driver.FindElement(By.Name("startDate"));
@@ -43,6 +43,7 @@ public class PromotionPositivePage
     }
     public void SelectPromotionType(string type)
     {
+        ///html/body/main/div/div/form/div[2]/div/div[2]/div[6]/div/button/span[1]
         PromotionTypeDropdown.Click();
         var option = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath($"//li[text()='{type}']")));
         option.Click();

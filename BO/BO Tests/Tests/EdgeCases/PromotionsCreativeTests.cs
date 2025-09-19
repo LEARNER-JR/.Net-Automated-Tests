@@ -1,5 +1,4 @@
 ﻿using BO_Tests.Tests;
-using Docker.DotNet.Models;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -20,8 +19,8 @@ public class PromotionCreativeTests : BaseTest
 
         _promotionPage = ServiceProvider.GetRequiredService<PromotionCreativePage>();
         _promotionPage.NavigateToPromotionsPage();
-        _promotionPage.ClickAddPromotionButton(); // Open the form
-        _promotionPage.WaitForPageLoad();         // Wait for the form to load
+        _promotionPage.ClickAddPromotionButton();
+        _promotionPage.WaitForPageLoad();
     }
 
     [Test]
@@ -98,8 +97,6 @@ public class PromotionCreativeTests : BaseTest
         _promotionPage.PromotionTypeDropdown.SendKeys(Keys.Tab);
         Assert.That(_promotionPage.ConditionDropdown.Displayed, Is.True,
             "Condition dropdown should be visible after tabbing.");
-
-        // Extend with additional fields and asserts
     }
 
     [Test]

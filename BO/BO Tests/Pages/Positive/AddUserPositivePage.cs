@@ -19,8 +19,19 @@ public class AddUserPositivePage
     private IWebElement EmailInput => driver.FindElement(By.Name("email"));
     private IWebElement PhoneNumberInput => driver.FindElement(By.XPath("//input[@type='tel']"));
     private IWebElement DateOfBirthInput => driver.FindElement(By.XPath("//input[@placeholder='Select Date']"));
-    private IWebElement GenderDropdown => driver.FindElement(By.Id("headlessui-listbox-button-:r32:"));
-    private IWebElement RegisterUserButton => driver.FindElement(By.XPath("//button[text()='Register User']"));
+    private IWebElement GenderDropdown => wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("")));
+
+    //*[@id="headlessui-listbox-button-:r37:"]
+    //*[@id="headlessui-listbox-button-:r5d:"]
+    //*[@id="headlessui-listbox-button-:r86:"]
+  
+
+    private IWebElement GenderDropdownButton => wait.Until(
+    SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(
+        By.XPath("/html/body/div[2]/div/div/div/div/div[2]/div/div/form/div[8]/div/div/button")
+    )
+);
+    private IWebElement RegisterUserButton => driver.FindElement(By.CssSelector("[name='Register User']"));
 
     public void SelectUserType(string userType)
     {
@@ -57,12 +68,21 @@ public class AddUserPositivePage
     public void SelectDateOfBirth(string dateOfBirth)
     {
         DateOfBirthInput.SendKeys(dateOfBirth);
+        DateOfBirthInput.SendKeys(Keys.Enter);
     }
 
     public void SelectGender(string gender)
     {
-        GenderDropdown.Click();
-        var genderOption = driver.FindElement(By.XPath($"//span[text()='{gender}']"));
+        // GenderDropdown.Click();
+        GenderDropdownButton.Click();
+
+        var genderOption = wait.Until(
+          SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(
+          By.XPath($"//ul[contains(@id,'headlessui-listbox-options')]//li[normalize-space()='{gender}']")
+              )
+          );
+
+        //var genderOption = driver.FindElement(By.XPath($"//span[text()='{gender}']"));
         genderOption.Click();
     }
 
@@ -71,18 +91,20 @@ public class AddUserPositivePage
         RegisterUserButton.Click();
     }
 
-    internal void NavigateToUserManagementPage()
+    public void NavigateToUserManagementPage()
     {
-        throw new NotImplementedException();
+        driver.Navigate().GoToUrl("https://sit-ui.upesimts.com/customers/users");
+        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlContains("users"));
     }
 
-    internal void ClickAddNewUserButton()
+    public void ClickAddNewUserButton()
     {
-        throw new NotImplementedException();
+        var addNewUserButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("/html/body/main/div/div/div/div[1]/div[2]/button")));
+        addNewUserButton.Click();
     }
 
-    internal void WaitForPageLoad()
+    public void WaitForPageLoad()
     {
-        throw new NotImplementedException();
+        wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
     }
 }

@@ -41,6 +41,10 @@ public class Program
         //promotions
         services.AddScoped<PromotionPositivePage>();
         services.AddScoped<PromotionNegativePage>();
+        services.AddScoped<PromotionCreativePage>();
+
+        //transactions
+        services.AddScoped<TransactionPositivePage>();
 
         return services.BuildServiceProvider();
 
