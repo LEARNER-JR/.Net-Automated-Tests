@@ -1,5 +1,5 @@
-﻿
-
+﻿using BO_Tests.Pages.Negative;
+using BO_Tests.Pages.Positive;
 using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium;
 public class Program
@@ -45,6 +45,10 @@ public class Program
 
         //transactions
         services.AddScoped<TransactionPositivePage>();
+
+        //system category
+        services.AddScoped<SystemCategoryPositivePage>();
+        services.AddScoped<SystemCategoryNegativePage>();
 
         return services.BuildServiceProvider();
 
